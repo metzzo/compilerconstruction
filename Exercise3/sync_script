@@ -1,0 +1,2 @@
+alias run_rsync='rsync -azP --exclude '.DS_store'  --exclude 'sync_script' ./ Complang:~/abgabe/scanner/'
+run_rsync; fswatch -o . | while read f; do run_rsync; done
