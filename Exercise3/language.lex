@@ -8,21 +8,23 @@
 %x comment
 %%
 "(*" BEGIN(comment);
-<comment>[^*\n]* {}
-<comment>"*"+[^*)\n]* {}
-<comment>"*"+")"        BEGIN(INITIAL);
+<comment>"*)" BEGIN(INITIAL);
+<comment>\n|. {}
 
-<INITIAL>[0-9]+[a-zA-Z][0-9a-zA-Z]* { printf("id %s\n", yytext);}
 <INITIAL>[0-9_]+ { number(yytext); }
 
 <INITIAL>" "|"\t"|"\n" { /* nothing */ }
 <INITIAL>"end"|"return"|"goto"|"if"|"var"|"and"|"not" { printf("%s\n", yytext); }
+<INITIAL>[a-zA-Z][0-9a-zA-Z]* { printf("id %s\n", yytext);}
 <INITIAL>";"|"("|")"|","|":"|"="|"!="|">"|"["|"]"|"-"|"+"|"*" { printf("%s\n", yytext); }
 <INITIAL>. { yyerror("Unrecognized character: %s\n", yytext); }
 %%
 
 int main(int argc, char *argv[]) {
   yylex();
+  if (YY_START == comment) {
+    yyerror("Missing closing '*)'\n", ""); 
+  }
   return 0;
 }
 
