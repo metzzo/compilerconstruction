@@ -12,6 +12,7 @@
 "(*" BEGIN(comment);
 <comment>"*)" BEGIN(INITIAL);
 <comment>\n|. {}
+<comment><<EOF>> {lexerror("Comment not closed."); }
 
 <INITIAL>[0-9_]+ { number(yytext); return NUMBER; }
 

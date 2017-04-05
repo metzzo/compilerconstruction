@@ -58,9 +58,12 @@ Stat: KW_RETURN Expr
     | Term
     ;
 
-Cond: Cterm 
-    | Cterm KW_AND Cond
+Cond: AndCond 
     | KW_NOT Cterm
+    ;
+
+AndCond: Cterm KW_AND AndCond
+    | Cterm
     ;
 
 Cterm: '(' Cond ')'
