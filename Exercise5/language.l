@@ -18,7 +18,7 @@ comment		\n|.
 <comment>"*)" BEGIN(INITIAL);
 <comment>{comment} {};
 <comment><<EOF>> { lexerror("Comment not closed."); };
-<INITIAL>[0-9_]+ return NUMBER; @{ @NUMBER.val@ = number(yytext); @}
+<INITIAL>[0-9_]+ return NUMBER;
 <INITIAL>{whitespace} {};
 <INITIAL>"end" return KW_END;
 <INITIAL>"return" return KW_RETURN;
@@ -27,7 +27,7 @@ comment		\n|.
 <INITIAL>"var" return KW_VAR;
 <INITIAL>"and" return KW_AND;
 <INITIAL>"not" return KW_NOT;
-<INITIAL>[a-zA-Z][0-9a-zA-Z]* return IDENTIFIER; @{ @IDENTIFIER.identifier_name@ = strdup(yytext); @}
+<INITIAL>[a-zA-Z][0-9a-zA-Z]* return IDENTIFIER; @{ @IDENTIFIER.name@ = strdup(yytext); @}
 <INITIAL>"!=" return OP_NOTEQU;
 <INITIAL>";" return ';';
 <INITIAL>"(" return '(';
