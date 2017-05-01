@@ -113,6 +113,7 @@ Stat: KW_RETURN Expr
         @}
     | KW_IF Cond KW_GOTO IDENTIFIER
         @{
+            @checkident checkIdentifier(@Stat.label_table@, @IDENTIFIER.name@);
             @i @Cond.var_table@ = @Stat.var_table@;
             @i @Stat.new_var_table@ = createTable();
         @}

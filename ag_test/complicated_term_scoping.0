@@ -1,0 +1,4 @@
+f(a)
+    var x = 2+(a)+a+f(a);
+    var y = 2*(a)*a*f(a);
+end;

@@ -1,0 +1,17 @@
+f(a,b,c,d)
+x:    a = b + c + d;
+goto x;
+goto y;
+    var e = f(1,2,3,4);
+y:
+    return e;
+end;
+
+g(a,b,c,d)
+x:    a = b + c + d;
+goto x;
+goto y;
+    var e = f(1,2,3,4);
+y:
+    return e;
+end;
