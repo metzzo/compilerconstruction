@@ -1,0 +1,7 @@
+a(x)
+	var y = 10;
+	var w = 90;
+	if ((((((x!=y and x>w)))))) goto z;
+z:
+	return x;
+	end;

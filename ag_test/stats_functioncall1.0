@@ -1,0 +1,4 @@
+x()
+y:goto y;
+  x();
+end;

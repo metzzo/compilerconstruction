@@ -1,0 +1,4 @@
+x()
+  if (1 > 1) and (1 != 1) goto x;
+  if (1 > 1 and 1 != 1) goto x;
+end;

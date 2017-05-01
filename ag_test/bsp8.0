@@ -1,0 +1,5 @@
+a(x)
+	if not (2!=4+4) goto z;
+z:
+	return x;
+	end;

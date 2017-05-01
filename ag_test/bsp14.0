@@ -1,0 +1,6 @@
+a(y)
+	var x = 1_5_;
+	x = 30;
+z:
+	return x;
+	end;

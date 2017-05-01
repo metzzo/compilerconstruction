@@ -13,10 +13,8 @@ extern int      yylineno;
 extern char*    yytext;
 
 table *createTable();
-table *cloneTable(table *source);
 table *createSymbol(table *source, char *name, table *other_table);
-table *mergeTable(table *table1, table *table2);
-table *verify_table(table *t);
+table *mergeTable(table *table1, table *table2, table *other_table);
 
 void checkIdentifier(table *source, char *name);
 
@@ -83,9 +81,11 @@ Stats: Labeldef Stat ';' Stats
         @{
             @i @Labeldef.label_table@ = @Stats.0.label_table@;
             @i @Labeldef.var_table@ = @Stats.0.var_table@;
+
             @i @Stat.var_table@ = @Stats.0.var_table@;
             @i @Stat.label_table@ = @Stats.0.label_table@;
-            @i @Stats.1.var_table@ = mergeTable(@Stats.0.var_table@, @Stat.new_var_table@);
+
+            @i @Stats.1.var_table@ = mergeTable(@Stats.0.var_table@, @Stat.new_var_table@, @Stat.label_table@);
             @i @Stats.1.label_table@ = @Stats.0.label_table@;
         @}
     | /* empty */
@@ -93,7 +93,7 @@ Stats: Labeldef Stat ';' Stats
         @}
     ;
 
-Labeldef: IDENTIFIER ':' Labeldef
+Labeldef: Labeldef IDENTIFIER ':'
         @{
             @i @Labeldef.1.label_table@ = createSymbol(@Labeldef.0.label_table@, @IDENTIFIER.name@, @Labeldef.0.var_table@);
             @i @Labeldef.1.var_table@ = @Labeldef.0.var_table@;
@@ -103,7 +103,7 @@ Labeldef: IDENTIFIER ':' Labeldef
 
 Stat: KW_RETURN Expr
         @{
-            @i @Expr.var_table@ = cloneTable(@Stat.var_table@);
+            @i @Expr.var_table@ = @Stat.var_table@;
             @i @Stat.new_var_table@ = createTable();
         @}
     | KW_GOTO IDENTIFIER
@@ -113,129 +113,136 @@ Stat: KW_RETURN Expr
         @}
     | KW_IF Cond KW_GOTO IDENTIFIER
         @{
-            @i @Cond.var_table@ = cloneTable(@Stat.var_table@);
+            @i @Cond.var_table@ = @Stat.var_table@;
             @i @Stat.new_var_table@ = createTable();
         @}
     | KW_VAR IDENTIFIER '=' Expr
         @{
-            @i @Expr.var_table@ = cloneTable(@Stat.var_table@);
+            @i @Expr.var_table@ = @Stat.var_table@;
             @i @Stat.new_var_table@ = createSymbol(createTable(), @IDENTIFIER.name@, @Stat.label_table@);
         @}
     | Lexpr '=' Expr
         @{
-            @i @Lexpr.var_table@ = cloneTable(@Stat.var_table@);
-            @i @Expr.var_table@ = cloneTable(@Stat.var_table@);
+            @i @Lexpr.var_table@ = @Stat.var_table@;
+            @i @Expr.var_table@ = @Stat.var_table@;
             @i @Stat.new_var_table@ = createTable();
         @}
     | Term
         @{
-            @i @Term.var_table@ = cloneTable(@Stat.var_table@);
+            @i @Term.var_table@ = @Stat.var_table@;
             @i @Stat.new_var_table@ = createTable();
         @}
     ;
 
 Cond: AndCond 
         @{
-            @i @AndCond.var_table@ = cloneTable(@Cond.var_table@);
+            @i @AndCond.var_table@ = @Cond.var_table@;
         @}
     | KW_NOT Cterm
         @{
-            @i @Cterm.var_table@ = cloneTable(@Cond.var_table@);
+            @i @Cterm.var_table@ = @Cond.var_table@;
         @}
     ;
 
 AndCond: Cterm KW_AND AndCond
         @{
-            @i @Cterm.var_table@ = cloneTable(@AndCond.0.var_table@);
-            @i @AndCond.1.var_table@ = cloneTable(@AndCond.0.var_table@);
+            @i @Cterm.var_table@ = @AndCond.0.var_table@;
+            @i @AndCond.1.var_table@ = @AndCond.0.var_table@;
         @}
     | Cterm
         @{
-            @i @Cterm.var_table@ = cloneTable(@AndCond.var_table@);
+            @i @Cterm.var_table@ = @AndCond.var_table@;
         @}
     ;
 
 Cterm: '(' Cond ')'
         @{
-            @i @Cond.var_table@ = cloneTable(@Cterm.var_table@);
+            @i @Cond.var_table@ = @Cterm.var_table@;
         @}
     | Expr OP_NOTEQU Expr
         @{
-            @i @Expr.0.var_table@ = cloneTable(@Cterm.var_table@);
-            @i @Expr.1.var_table@ = cloneTable(@Cterm.var_table@);
+            @i @Expr.0.var_table@ = @Cterm.var_table@;
+            @i @Expr.1.var_table@ = @Cterm.var_table@;
         @}
     | Expr '>' Expr
         @{
-            @i @Expr.0.var_table@ = cloneTable(@Cterm.var_table@);
-            @i @Expr.1.var_table@ = cloneTable(@Cterm.var_table@);
+            @i @Expr.0.var_table@ = @Cterm.var_table@;
+            @i @Expr.1.var_table@ = @Cterm.var_table@;
         @}
     ;
 
 Lexpr: IDENTIFIER
+        @{
+            @checkident checkIdentifier(@Lexpr.var_table@, @IDENTIFIER.name@);
+        @}
     | Term '[' Expr ']'
         @{
-            @i @Term.var_table@ = cloneTable(@Lexpr.var_table@);
-            @i @Expr.var_table@ = cloneTable(@Lexpr.var_table@);
+            @i @Term.var_table@ = @Lexpr.var_table@;
+            @i @Expr.var_table@ = @Lexpr.var_table@;
         @}
     ;
 
 Expr: Term '+' AddExpr
         @{
-            @i @Term.var_table@ = cloneTable(@Expr.var_table@);
-            @i @AddExpr.var_table@ = cloneTable(@Expr.var_table@);
+            @i @Term.var_table@ = @Expr.var_table@;
+            @i @AddExpr.var_table@ = @Expr.var_table@;
         @}
     | Term '*' MulExpr
         @{
-            @i @Term.var_table@ = cloneTable(@Expr.var_table@);
-            @i @MulExpr.var_table@ = cloneTable(@Expr.var_table@);
+            @i @Term.var_table@ = @Expr.var_table@;
+            @i @MulExpr.var_table@ = @Expr.var_table@;
         @}
     | '-' NegExpr
         @{
-            @i @NegExpr.var_table@ = cloneTable(@Expr.var_table@);
+            @i @NegExpr.var_table@ = @Expr.var_table@;
         @}
     | Term
         @{
-            @i @Term.var_table@ = cloneTable(@Expr.var_table@);
+            @i @Term.var_table@ = @Expr.var_table@;
         @}
     ;
 
 AddExpr: Term '+' AddExpr
         @{
-            @i @Term.var_table@ = cloneTable(@AddExpr.0.var_table@);
-            @i @AddExpr.1.var_table@ = cloneTable(@AddExpr.0.var_table@);
+            @i @Term.var_table@ = @AddExpr.0.var_table@;
+            @i @AddExpr.1.var_table@ = @AddExpr.0.var_table@;
         @}
     | Term
         @{
-            @i @Term.var_table@ = cloneTable(@AddExpr.var_table@);
+            @i @Term.var_table@ = @AddExpr.var_table@;
         @}
     ;
 
 MulExpr: Term '*' MulExpr
         @{
-            @i @Term.var_table@ = cloneTable(@MulExpr.0.var_table@);
-            @i @MulExpr.1.var_table@ = cloneTable(@MulExpr.0.var_table@);
+            @i @Term.var_table@ = @MulExpr.0.var_table@;
+            @i @MulExpr.1.var_table@ = @MulExpr.0.var_table@;
         @}
     | Term
         @{
-            @i @Term.var_table@ = cloneTable(@MulExpr.var_table@);
+            @i @Term.var_table@ = @MulExpr.var_table@;
         @}
     ;
 
 NegExpr: '-' NegExpr
-        @{ @i @NegExpr.1.var_table@ = cloneTable(@NegExpr.0.var_table@); @}
+        @{ 
+            @i @NegExpr.1.var_table@ = @NegExpr.0.var_table@; 
+        @}
     | Term
-        @{ @i @Term.var_table@ = cloneTable(@NegExpr.var_table@); /*asdf1*/ @}
+        @{ 
+            @i @Term.var_table@ = @NegExpr.var_table@;
+            @}
     ;
 
 Term: '(' Expr ')'
         @{
-            @i @Expr.var_table@ = cloneTable(@Term.var_table@);
+            @i @Expr.var_table@ = @Term.var_table@;
         @}
     | NUMBER
     | Term '[' Expr ']'
         @{
-            @i @Term.1.var_table@ = cloneTable(@Term.0.var_table@);
-            @i @Expr.var_table@ = cloneTable(@Term.0.var_table@);
+            @i @Term.1.var_table@ = @Term.0.var_table@;
+            @i @Expr.var_table@ = @Term.0.var_table@;
         @}
     | IDENTIFIER
         @{
@@ -243,18 +250,18 @@ Term: '(' Expr ')'
         @}
     | IDENTIFIER '(' FuncCall ')'
         @{
-            @i @FuncCall.var_table@ = cloneTable(@Term.var_table@);
+            @i @FuncCall.var_table@ = @Term.var_table@;
         @}
     ;
 
 FuncCall: Expr ',' FuncCall
         @{
-            @i @Expr.var_table@ = cloneTable(@FuncCall.0.var_table@);
-            @i @FuncCall.1.var_table@ = cloneTable(@FuncCall.0.var_table@);
+            @i @Expr.var_table@ = @FuncCall.0.var_table@;
+            @i @FuncCall.1.var_table@ = @FuncCall.0.var_table@;
         @}
     | Expr
         @{
-            @i @Expr.var_table@ = cloneTable(@FuncCall.var_table@);
+            @i @Expr.var_table@ = @FuncCall.var_table@;
         @}
     | /* empty */
 
@@ -271,11 +278,15 @@ table *createTable() {
 }
 
 int contains(table *source, char *name) {
+    printf("Search for %s\n", name);
     for (int i = 0; i < source->name_count; i++) {
+        printf("\tIs %s equals %s?\n", name, source->names[i]);
         if (strcmp(source->names[i], name) == 0) {
+            printf("Did find %s\n", name);
             return 1;
         }
     }
+    printf("Did not find %s\n", name);
     return 0;
 }
 
@@ -300,49 +311,29 @@ table *createSymbol(table *source, char *name, table *other_table) {
     assert(source->names != NULL);
 
     source->names[source->name_count - 1] = strdup(name);
-
+    printf("Symbol %s successfully created\n", name);
     return source;
 }
 
-table *cloneTable(table *source) {
-    printf("Clone table\n");
-    fflush(stdout);
-
-    return mergeTable(source, createTable());
-}
-
-table *mergeTable(table *table1, table* table2) {
+table *mergeTable(table *table1, table* table2, table *other_table) {
     printf("Merge Table \n");
     fflush(stdout);
 
     table *newTable = createTable();
     for (int i = 0; i < table1->name_count; i++) {
-        printf("%s ", table1->names[i]);
-        fflush(stdout);
-
-        createSymbol(newTable, table1->names[i], createTable());
+        createSymbol(newTable, table1->names[i], other_table);
     }
     for (int i = 0; i < table2->name_count; i++) {
-        printf("%s ", table2->names[i]);
-        fflush(stdout);
-
-        createSymbol(newTable, table2->names[i], createTable());
+        createSymbol(newTable, table2->names[i], other_table);
     }
-    printf("\n");
+    printf("Finish Merging\n");
     fflush(stdout);
 
     return newTable;
 }
 
-table *verify_table(table *t) {
-    printf("Verify table \n");
-    fflush(stdout);
-
-    assert(t != NULL);
-    return t;
-}
-
 void checkIdentifier(table *source, char *name) {
+    printf("Check if identifier exists %s", name);
     if (!contains(source, name)) {
         printf("Undefined identifier %s", name);
         exit(3);

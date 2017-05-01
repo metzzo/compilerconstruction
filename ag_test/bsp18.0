@@ -1,0 +1,7 @@
+f()	return 42; end;
+
+a()
+	var x = 2;
+	f();
+	var zweiund40 = f();
+	end;

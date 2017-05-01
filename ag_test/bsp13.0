@@ -1,0 +1,5 @@
+a(x)
+	goto z;
+z:
+	return x;
+	end;

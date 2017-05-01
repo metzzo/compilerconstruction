@@ -1,0 +1,5 @@
+(* multiple labels *)
+a(x)
+e:f:g:h:i:j:k:l:m:n:o:p:
+	return x;
+	end;

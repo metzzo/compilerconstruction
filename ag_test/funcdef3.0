@@ -1,0 +1,12 @@
+x(x,)
+  return x;
+end;
+
+y(y,z)
+ return y;
+end;
+
+z()
+ var z = 0;
+ return z;
+end;

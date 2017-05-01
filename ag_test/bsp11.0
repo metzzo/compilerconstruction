@@ -1,0 +1,8 @@
+a(x)
+	var a = 10;
+	var b = 20;
+	var c = 30;
+	if 2+3!=3*4 and (a>b) and (not (a>c)) goto z;
+z:
+	return x;
+	end;
