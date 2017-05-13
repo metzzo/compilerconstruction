@@ -14,8 +14,6 @@ int yylex();
 extern int      yylineno;
 extern char*    yytext;
 
-void checkIdentifier(table *source, char *name);
-
 void burm_label(NODEPTR_TYPE);
 void burm_reduce(NODEPTR_TYPE bnode, int goalnt);
 
@@ -50,7 +48,8 @@ void burm_reduce(NODEPTR_TYPE bnode, int goalnt);
 @attributes { table *var_table; table *label_table; } Labeldef
 
 @traversal @postorder checkident
-@traversal @lefttoright @postorder codegen
+@traversal @lefttoright @postorder reggen
+@traversal @lefttoright @preorder codegen
 
 %start Program
 %%
@@ -62,24 +61,23 @@ Program: Funcdef ';' Program
 Funcdef: IDENTIFIER '(' Pars ')' Stats KW_END 
         @{
             @i @Stats.var_table@ = @Pars.var_table@;
-            @i @Stats.label_table@ = createTable();
+            @i @Stats.label_table@ = create_table();
 
             @codegen asm_func_def(@IDENTIFIER.name@);
-			@codegen burm_label(@Stats.node@); burm_reduce(@Stats.node@,1);
         @}
     ;
 
 Pars: IDENTIFIER ',' Pars
         @{
-            @i @Pars.0.var_table@ = createSymbol(@Pars.1.var_table@, @IDENTIFIER.name@, createTable());
+            @i @Pars.0.var_table@ = create_symbol(@Pars.1.var_table@, @IDENTIFIER.name@, create_table());
         @}
     | IDENTIFIER
         @{
-            @i @Pars.var_table@ = createSymbol(createTable(), @IDENTIFIER.name@, createTable());
+            @i @Pars.var_table@ = create_symbol(create_table(), @IDENTIFIER.name@, create_table());
         @}
     | /* empty */
         @{
-            @i @Pars.var_table@ = createTable();
+            @i @Pars.var_table@ = create_table();
         @}
     ;
 
@@ -91,13 +89,10 @@ Stats: Labeldef Stat ';' Stats
             @i @Stat.var_table@ = @Stats.0.var_table@;
             @i @Stat.label_table@ = @Stats.0.label_table@;
 
-            @i @Stats.1.var_table@ = mergeTable(@Stats.0.var_table@, @Stat.new_var_table@, @Stat.label_table@);
+            @i @Stats.1.var_table@ = merge_table(@Stats.0.var_table@, @Stat.new_var_table@, @Stat.label_table@);
             @i @Stats.1.label_table@ = @Stats.0.label_table@;
             
-            @i @Stats.node@ = new_empty();
-
-            @codegen @Stats.0.node@ = @Stat.0.node@;
-			@codegen @Stats.0.node@->right = @Stats.1.node@;
+            @i @Stats.0.node@ = new_stat(@Stat.0.node@, @Stats.1.node@);
         @}
     | /* empty */
         @{
@@ -107,7 +102,7 @@ Stats: Labeldef Stat ';' Stats
 
 Labeldef: Labeldef IDENTIFIER ':'
         @{
-            @i @Labeldef.1.label_table@ = createSymbol(@Labeldef.0.label_table@, @IDENTIFIER.name@, @Labeldef.0.var_table@);
+            @i @Labeldef.1.label_table@ = create_symbol(@Labeldef.0.label_table@, @IDENTIFIER.name@, @Labeldef.0.var_table@);
             @i @Labeldef.1.var_table@ = @Labeldef.0.var_table@;
         @}
     | /* empty */
@@ -116,41 +111,42 @@ Labeldef: Labeldef IDENTIFIER ':'
 Stat: KW_RETURN Expr
         @{
             @i @Expr.var_table@ = @Stat.var_table@;
-            @i @Stat.new_var_table@ = createTable();
-            @i @Stat.node@ = new_empty();
+            @i @Stat.new_var_table@ = create_table();
+            @i @Stat.node@ = new_return(@Expr.0.node@);
 
-            @codegen @Stat.0.node@ = new_return(@Expr.0.node@);
+            @reggen calc_register(@Stat.node@);
+			@codegen burm_label(@Stat.node@); burm_reduce(@Stat.node@,1);
         @}
     | KW_GOTO IDENTIFIER
         @{
-            @checkident checkIdentifier(@Stat.label_table@, @IDENTIFIER.name@);
-            @i @Stat.new_var_table@ = createTable();
+            @checkident check_identifier(@Stat.label_table@, @IDENTIFIER.name@);
+            @i @Stat.new_var_table@ = create_table();
             @i @Stat.node@ = new_empty();
         @}
     | KW_IF Cond KW_GOTO IDENTIFIER
         @{
-            @checkident checkIdentifier(@Stat.label_table@, @IDENTIFIER.name@);
+            @checkident check_identifier(@Stat.label_table@, @IDENTIFIER.name@);
             @i @Cond.var_table@ = @Stat.var_table@;
-            @i @Stat.new_var_table@ = createTable();
+            @i @Stat.new_var_table@ = create_table();
             @i @Stat.node@ = new_empty();
         @}
     | KW_VAR IDENTIFIER '=' Expr
         @{
             @i @Expr.var_table@ = @Stat.var_table@;
-            @i @Stat.new_var_table@ = createSymbol(createTable(), @IDENTIFIER.name@, @Stat.label_table@);
+            @i @Stat.new_var_table@ = create_symbol(create_table(), @IDENTIFIER.name@, @Stat.label_table@);
             @i @Stat.node@ = new_empty();
         @}
     | Lexpr '=' Expr
         @{
             @i @Lexpr.var_table@ = @Stat.var_table@;
             @i @Expr.var_table@ = @Stat.var_table@;
-            @i @Stat.new_var_table@ = createTable();
+            @i @Stat.new_var_table@ = create_table();
             @i @Stat.node@ = new_empty();
         @}
     | Term
         @{
             @i @Term.var_table@ = @Stat.var_table@;
-            @i @Stat.new_var_table@ = createTable();
+            @i @Stat.new_var_table@ = create_table();
             @i @Stat.node@ = new_empty();
         @}
     ;
@@ -194,7 +190,7 @@ Cterm: '(' Cond ')'
 
 Lexpr: IDENTIFIER
         @{
-            @checkident checkIdentifier(@Lexpr.var_table@, @IDENTIFIER.name@);
+            @checkident check_identifier(@Lexpr.var_table@, @IDENTIFIER.name@);
         @}
     | Term '[' Expr ']'
         @{
@@ -223,9 +219,7 @@ Expr: Term '+' AddExpr
     | Term
         @{
             @i @Term.var_table@ = @Expr.var_table@;
-            @i @Expr.node@ = new_empty();
-
-			@codegen @Expr.node@ = @Term.node@;
+            @i @Expr.node@ = @Term.node@;
         @}
     ;
 
@@ -264,13 +258,11 @@ NegExpr: '-' NegExpr
 Term: '(' Expr ')'
         @{
             @i @Expr.var_table@ = @Term.var_table@;
-            @i @Term.node@ = new_empty();
+            @i @Term.node@ = @Expr.node@;
         @}
     | NUMBER
         @{
-            @i @Term.node@ = new_empty();
-
-            @codegen @Term.node@ = new_num(@NUMBER.val@);
+            @i @Term.node@ = new_num(@NUMBER.val@);
         @}
     | Term '[' Expr ']'
         @{
@@ -280,8 +272,9 @@ Term: '(' Expr ')'
         @}
     | IDENTIFIER
         @{
-            @i @Term.node@ = new_empty();
-            @checkident checkIdentifier(@Term.var_table@, @IDENTIFIER.name@);
+            @i @Term.node@ = new_var(@Term.var_table@, @IDENTIFIER.name@);
+
+            @checkident check_identifier(@Term.var_table@, @IDENTIFIER.name@);
         @}
     | IDENTIFIER '(' FuncCall ')'
         @{

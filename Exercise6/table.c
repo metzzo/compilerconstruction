@@ -4,7 +4,7 @@
 #include <string.h>
 #include <assert.h>
 
-table *createTable() {
+table *create_table() {
     DEBUG_PRINT("Create table\n");
 
     table *t = malloc(sizeof(table));
@@ -26,7 +26,7 @@ int contains(table *source, char *name) {
     return 0;
 }
 
-table *createSymbol(table *source, char *name, table *other_table) {
+table *create_symbol(table *source, char *name, table *other_table) {
     DEBUG_PRINT("Create symbol %s\n", name);
 
     // check if symbol already exists
@@ -50,25 +50,37 @@ table *createSymbol(table *source, char *name, table *other_table) {
     return source;
 }
 
-table *mergeTable(table *table1, table* table2, table *other_table) {
+table *merge_table(table *table1, table* table2, table *other_table) {
     DEBUG_PRINT("Merge Table \n");
 
-    table *newTable = createTable();
+    table *newTable = create_table();
     for (int i = 0; i < table1->name_count; i++) {
-        createSymbol(newTable, table1->names[i], other_table);
+        create_symbol(newTable, table1->names[i], other_table);
     }
     for (int i = 0; i < table2->name_count; i++) {
-        createSymbol(newTable, table2->names[i], other_table);
+        create_symbol(newTable, table2->names[i], other_table);
     }
     DEBUG_PRINT("Finish Merging\n");
 
     return newTable;
 }
 
-void checkIdentifier(table *source, char *name) {
+void check_identifier(table *source, char *name) {
     DEBUG_PRINT("Check if identifier exists %s", name);
     if (!contains(source, name)) {
         fprintf(stderr, "Undefined identifier %s", name);
         exit(3);
     }
+}
+
+char *input_registers[] = { "%rdi", "%rsi", "%rdx", "%rcx", "%r8", "%r9"};
+
+char *get_register(table *source, char *name) {
+    for (int i = 0; i < source->name_count; i++) {
+        if (strcmp(source->names[i], name) == 0) {
+            assert(i < 6); // number of elements in input_registers
+            return input_registers[i];
+        }
+    }
+    assert(0);
 }

@@ -7,15 +7,22 @@
 
 %}
 
-%start stmt
+%start stat
 	
-%term T_NUM=1
-%term T_RET=2
+%term T_NUM=2
+%term T_RET=3
+%term T_VAR=4
+%term T_STAT=5
 
 %%
 
-stmt:   ret         # 1 #   asm_ret();
-ret:    T_RET(num)  # 1 #   asm_ret_num(bnode->left);
-num:    T_NUM       # 0
+stat:   ret         # 0 #
+
+ret:    T_RET(num)  # 0 # asm_ret(bnode);   
+ret:    T_RET(var)  # 0 # asm_ret(bnode); 
+
+num:    T_NUM       # 0 # asm_num(bnode);
+var:    T_VAR       # 0 # asm_var(bnode);
+
 
 %%

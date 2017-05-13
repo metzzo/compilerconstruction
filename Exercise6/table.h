@@ -12,8 +12,10 @@ typedef struct table {
     int name_count;
 } table;
 
-table *createTable();
-table *createSymbol(table *source, char *name, table *other_table);
-table *mergeTable(table *table1, table *table2, table *other_table);
+table *create_table();
+table *create_symbol(table *source, char *name, table *other_table);
+table *merge_table(table *table1, table *table2, table *other_table);
+void check_identifier(table *source, char *name);
+char *get_register(table *source, char *name);
 
 #endif

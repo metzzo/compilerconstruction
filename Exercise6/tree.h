@@ -2,11 +2,14 @@
 #define TREE_INCL
 
 #include <stdint.h>
+#include "table.h"
 
 typedef enum node_type {
     NODE_EMPTY = 1,
     NODE_NUM = 2,
-    NODE_RETURN = 3
+    NODE_RETURN = 3,
+    NODE_VAR = 4,
+    NODE_STAT = 5
 } node_type;
 
 typedef struct tree_node_t {
@@ -14,10 +17,13 @@ typedef struct tree_node_t {
     struct tree_node_t *left;
     struct tree_node_t *right;
 	struct burm_state *label;
-
+    char *reg;
     char *name;
 	int64_t val;
+    table *var_table;
 } tree_node;
+
+void calc_register(tree_node *node);
 
 // iburg stuff
 typedef tree_node *treenodeptr;
@@ -31,10 +37,11 @@ typedef tree_node *treenodeptr;
 
 // functions
 
-tree_node *new_node(node_type type, tree_node *left, tree_node *right);
 tree_node *new_num(int64_t val);
+tree_node *new_var(table *var_table, char *name);
 tree_node *new_empty();
 tree_node *new_return(tree_node *ret);
+tree_node *new_stat(tree_node *line, tree_node *next);
 
 
 #endif
