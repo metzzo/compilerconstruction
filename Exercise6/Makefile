@@ -21,10 +21,10 @@ oxout.y oxout.l: language.y language.l
 	ox language.y language.l
 
 code.c: language.bfe
-	bfe language.bfe | iburg > code.c
+	bfe < language.bfe | iburg > code.c
 
 $(TARGET): lex.yy.c oxout.tab.c oxout.tab.h code.c
-	$(CC) $(CFLAGS) lex.yy.c oxout.tab.c code.c -o $(TARGET)
+	$(CC) $(CFLAGS) lex.yy.c oxout.tab.c code.c table.c tree.c code_gen.c -o $(TARGET)
 
 clean:
 	$(RM) $(TARGET) lex.yy.c oxout.tab.c oxout.tab.h oxout.h oxout.c oxout.l oxout.y oxout.output

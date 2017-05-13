@@ -5,6 +5,8 @@
     #include "oxout.tab.h"
     void lexerror(char *s);
     int64_t number(char *s);
+    #include "tree.h"
+    #include "table.h"
 %}
 
 whitespace	[\n\t ]

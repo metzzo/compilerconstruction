@@ -1,4 +1,21 @@
-@{
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+#include "tree.h"
+#include "code_gen.h"
 
-@}
+%}
 
+%start stmt
+	
+%term T_NUM=1
+%term T_RET=2
+
+%%
+
+stmt:   ret         # 1 #   asm_ret();
+ret:    T_RET(num)  # 1 #   asm_ret_num(bnode->left);
+num:    T_NUM       # 0
+
+%%
