@@ -41,14 +41,14 @@ void burm_reduce(NODEPTR_TYPE bnode, int goalnt);
 @attributes { table *var_table; } Lexpr 
 @attributes { table *var_table; } AndCond 
 @attributes { table *var_table; } Cterm 
-@attributes { table *var_table; } AddExpr 
-@attributes { table *var_table; } MulExpr 
-@attributes { table *var_table; } NegExpr 
+@attributes { table *var_table; tree_node *node; } AddExpr 
+@attributes { table *var_table; tree_node *node; } MulExpr 
+@attributes { table *var_table; tree_node *node; } NegExpr 
 @attributes { table *var_table; } FuncCall
 @attributes { table *var_table; table *label_table; } Labeldef
 
 @traversal @postorder checkident
-@traversal @lefttoright @postorder reggen
+@traversal @lefttoright @preorder reggen
 @traversal @lefttoright @preorder codegen
 
 %start Program
@@ -203,18 +203,24 @@ Expr: Term '+' AddExpr
         @{
             @i @Term.var_table@ = @Expr.var_table@;
             @i @AddExpr.var_table@ = @Expr.var_table@;
-            @i @Expr.node@ = new_empty();
+            @i @Expr.node@ = new_add(@Term.node@, @AddExpr.node@);
+
+            @reggen calc_register(@Expr.node@);
         @}
     | Term '*' MulExpr
         @{
             @i @Term.var_table@ = @Expr.var_table@;
             @i @MulExpr.var_table@ = @Expr.var_table@;
-            @i @Expr.node@ = new_empty();
+            @i @Expr.node@ = new_mul(@Term.node@, @MulExpr.node@);
+
+            @reggen calc_register(@Expr.node@);
         @}
     | '-' NegExpr
         @{
             @i @NegExpr.var_table@ = @Expr.var_table@;
-            @i @Expr.node@ = new_empty();
+            @i @Expr.node@ = new_neg(@NegExpr.node@);
+
+            @reggen calc_register(@Expr.node@);
         @}
     | Term
         @{
@@ -227,10 +233,14 @@ AddExpr: Term '+' AddExpr
         @{
             @i @Term.var_table@ = @AddExpr.0.var_table@;
             @i @AddExpr.1.var_table@ = @AddExpr.0.var_table@;
+            @i @AddExpr.0.node@ = new_add(@Term.node@, @AddExpr.1.node@);
+
+            @reggen calc_register(@AddExpr.node@);
         @}
     | Term
         @{
             @i @Term.var_table@ = @AddExpr.var_table@;
+            @i @AddExpr.node@ = @Term.node@;
         @}
     ;
 
@@ -238,21 +248,29 @@ MulExpr: Term '*' MulExpr
         @{
             @i @Term.var_table@ = @MulExpr.0.var_table@;
             @i @MulExpr.1.var_table@ = @MulExpr.0.var_table@;
+            @i @MulExpr.0.node@ = new_mul(@Term.node@, @MulExpr.1.node@);
+
+            @reggen calc_register(@MulExpr.node@);
         @}
     | Term
         @{
             @i @Term.var_table@ = @MulExpr.var_table@;
+            @i @MulExpr.node@ = @Term.node@;
         @}
     ;
 
 NegExpr: '-' NegExpr
         @{ 
-            @i @NegExpr.1.var_table@ = @NegExpr.0.var_table@; 
+            @i @NegExpr.1.var_table@ = @NegExpr.0.var_table@;
+            @i @NegExpr.0.node@ = new_neg(@NegExpr.0.node@);
+
+            @reggen calc_register(@NegExpr.node@);
         @}
     | Term
         @{ 
             @i @Term.var_table@ = @NegExpr.var_table@;
-            @}
+            @i @NegExpr.node@ = @Term.node@;
+        @}
     ;
 
 Term: '(' Expr ')'

@@ -9,7 +9,10 @@ typedef enum node_type {
     NODE_NUM = 2,
     NODE_RETURN = 3,
     NODE_VAR = 4,
-    NODE_STAT = 5
+    NODE_STAT = 5,
+    NODE_ADD = 6,
+    NODE_MUL = 7,
+    NODE_NEG = 8 
 } node_type;
 
 typedef struct tree_node_t {
@@ -42,6 +45,8 @@ tree_node *new_var(table *var_table, char *name);
 tree_node *new_empty();
 tree_node *new_return(tree_node *ret);
 tree_node *new_stat(tree_node *line, tree_node *next);
-
+tree_node *new_add(tree_node *left, tree_node *right);
+tree_node *new_mul(tree_node *left, tree_node *right);
+tree_node *new_neg(tree_node *expr);
 
 #endif

@@ -41,6 +41,18 @@ tree_node *new_stat(tree_node *line, tree_node *next) {
     return new_node(NODE_STAT, line, next);
 }
 
+tree_node *new_add(tree_node *left, tree_node *right) {
+    return new_node(NODE_ADD, left, right);
+}
+
+tree_node *new_mul(tree_node *left, tree_node *right) {
+    return new_node(NODE_MUL, left, right);
+}
+
+tree_node *new_neg(tree_node *expr) {
+    return new_node(NODE_NEG, expr, NULL);
+}
+
 
 char *tmp_reg_names[]={"%rax", "%r10", "%r11", "%r9", "%r8", "%rcx", "%rdx", "%rsi", "%rdi"};
 
@@ -71,6 +83,16 @@ void calc_register(tree_node *node) {
         case NODE_RETURN:
             node->reg = "%rax";
             node->left->reg = next_tmp_reg(NULL);
+            break;
+        case NODE_ADD:
+        case NODE_MUL:
+            assert(node->reg != NULL);
+            node->left->reg = node->reg;
+            node->right->reg = next_tmp_reg(node->reg);
+            break;
+        case NODE_NEG:
+            assert(node->reg != NULL);
+            node->left->reg = node->reg;
             break;
         default:
             assert(0);

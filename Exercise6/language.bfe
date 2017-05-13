@@ -13,16 +13,24 @@
 %term T_RET=3
 %term T_VAR=4
 %term T_STAT=5
+%term T_ADD=6
+%term T_MUL=7
+%term T_NEG=8
 
 %%
 
-stat:   ret         # 0 #
+stat:   ret                     # 0 #
 
-ret:    T_RET(num)  # 0 # asm_ret(bnode);   
-ret:    T_RET(var)  # 0 # asm_ret(bnode); 
+ret:    T_RET(expr)             # 0 # asm_ret(bnode);  
 
-num:    T_NUM       # 0 # asm_num(bnode);
-var:    T_VAR       # 0 # asm_var(bnode);
+expr:   T_ADD(expr, expr)       # 0 # asm_add(bnode);
+expr:   T_MUL(expr, expr)       # 0 # asm_mul(bnode);
+expr:   T_NEG(expr)             # 0 # asm_neg(bnode);
+
+expr:    T_NUM                  # 0 # asm_num(bnode);
+expr:    T_VAR                  # 0 # asm_var(bnode);
+
+
 
 
 %%
