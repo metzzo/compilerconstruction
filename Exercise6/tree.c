@@ -100,7 +100,7 @@ void calc_register(tree_node *node) {
             break;
         case NODE_ARRAY_ACCESS:
             assert(node->reg != NULL);
-            node->left->reg = next_tmp_reg(node->reg);
+            node->left->reg = node->reg;
             node->right->reg = next_tmp_reg(node->left->reg);
 
             break;

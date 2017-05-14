@@ -27,4 +27,4 @@ $(TARGET): lex.yy.c oxout.tab.c oxout.tab.h code.c
 	$(CC) $(CFLAGS) lex.yy.c oxout.tab.c code.c table.c tree.c code_gen.c -o $(TARGET)
 
 clean:
-	$(RM) $(TARGET) lex.yy.c oxout.tab.c oxout.tab.h oxout.h oxout.c oxout.l oxout.y oxout.output
+	$(RM) $(TARGET) lex.yy.c oxout.tab.c oxout.tab.h oxout.h oxout.c oxout.l oxout.y oxout.output code.c 
