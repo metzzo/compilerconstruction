@@ -79,7 +79,7 @@ char *get_register(table *source, char *name) {
     for (int i = 0; i < source->name_count; i++) {
         if (strcmp(source->names[i], name) == 0) {
             assert(i < 6); // number of elements in input_registers
-            return input_registers[i];
+            return input_registers[source->name_count - i - 1]; // because parameters are added in reverse order
         }
     }
     assert(0);

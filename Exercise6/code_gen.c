@@ -5,7 +5,7 @@
 #include <string.h>
 #include <assert.h>
 
-void asm_move(char *from_reg, char *to_reg){
+void asm_move(char *from_reg, char *to_reg) {
     assert(from_reg != NULL);
     assert(to_reg != NULL);
 
@@ -26,24 +26,47 @@ void asm_ret(tree_node *n) {
 	fprintf(stdout, "\tret\n");
 }
 
-void asm_num(tree_node *n) {
-    char from_val[20];
-    sprintf(from_val, "$%ld", n->val);
-    asm_move(from_val, n->reg);
+void asm_cexpr_to_expr(tree_node *n) {
+    asm_move(to_literal(n->val), n->reg);
 }
 
 void asm_var(tree_node *n) {
     asm_move(get_register(n->var_table, n->name), n->reg);
 }
 
-void asm_add(tree_node *n) {
-    fprintf(stdout, "\taddq %%%s, %%%s\n", n->left->reg, n->right->reg);
+void asm_add(tree_node *n, char *from, char *to) {
+    fprintf(stdout, "\taddq %s, %s\n", from, to);
+    asm_move(to, n->reg);
 }
 
-void asm_mul(tree_node *n) {
-    fprintf(stdout, "\timulq %%%s, %%%s\n", n->left->reg, n->right->reg);
+void asm_mul(tree_node *n, char *from, char *to) {
+    fprintf(stdout, "\timulq %s, %s\n", from, to);
+    asm_move(to, n->reg);
 }
 
-void asm_neg(tree_node *n) {
-    fprintf(stdout, "\tnegq %%%s\n", n->left->reg);
+void asm_neg(tree_node *n, char *from) {
+    fprintf(stdout, "\tnegq %s\n", from);
+}
+
+void asm_array_access(tree_node *n) {
+    char from_reg[100];
+    sprintf(from_reg, "0(%s, %s, 8)", n->left->reg, n->right->reg);
+    asm_move(from_reg, n->reg);
+}
+
+void asm_add_const(tree_node *n) {
+    n->val = n->left->val + n->right->val;
+}
+void asm_mul_const(tree_node *n) {
+    assert(0);
+    n->val = n->left->val * n->right->val;
+}
+void asm_neg_const(tree_node *n) {
+    n->val = -n->left->val;
+}
+
+char* to_literal(int64_t val) {
+    char* literal = malloc(sizeof(char)*100); // TODO: in a real world app, this should be freed somewhere
+    sprintf(literal, "$%ld", val);
+    return literal;
 }

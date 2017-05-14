@@ -16,20 +16,33 @@
 %term T_ADD=6
 %term T_MUL=7
 %term T_NEG=8
+%term T_ARR_ACC=9
 
 %%
 
 stat:   ret                     # 0 #
 
-ret:    T_RET(expr)             # 0 # asm_ret(bnode);  
+ret:    T_RET(expr)             # 1 # asm_ret(bnode);
 
-expr:   T_ADD(expr, expr)       # 0 # asm_add(bnode);
-expr:   T_MUL(expr, expr)       # 0 # asm_mul(bnode);
-expr:   T_NEG(expr)             # 0 # asm_neg(bnode);
+expr:   cexpr                   # 1 # asm_cexpr_to_expr(bnode);
 
-expr:    T_NUM                  # 0 # asm_num(bnode);
-expr:    T_VAR                  # 0 # asm_var(bnode);
+expr:   T_ADD(expr, expr)       # 1 # asm_add(bnode, bnode->left->reg, bnode->right->reg);
+expr:   T_ADD(cexpr, expr)      # 1 # asm_add(bnode, to_literal(bnode->left->val), bnode->right->reg);
+expr:   T_ADD(expr, cexpr)      # 1 # asm_add(bnode, to_literal(bnode->right->val), bnode->left->reg);
+cexpr:  T_ADD(cexpr, cexpr)     # 0 # asm_add_const(bnode);
 
+expr:   T_MUL(expr, expr)       # 1 # asm_mul(bnode, bnode->left->reg, bnode->right->reg);
+expr:   T_MUL(expr, cexpr)      # 1 # asm_mul(bnode, to_literal(bnode->right->val), bnode->left->reg);
+expr:   T_MUL(cexpr, expr)      # 1 # asm_mul(bnode, to_literal(bnode->left->val), bnode->right->reg);
+cexpr:  T_MUL(cexpr, cexpr)     # 0 # asm_mul_const(bnode);
+
+
+expr:   T_NEG(expr)             # 1 # asm_neg(bnode, bnode->left->reg);
+cexpr:  T_NEG(cexpr)            # 0 # asm_neg_const(bnode);
+
+cexpr:  T_NUM                   # 0 #
+expr:   T_VAR                   # 1 # asm_var(bnode);
+expr:   T_ARR_ACC(expr, expr)   # 1 # asm_array_access(bnode);
 
 
 

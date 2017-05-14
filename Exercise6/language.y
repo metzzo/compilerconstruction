@@ -262,7 +262,7 @@ MulExpr: Term '*' MulExpr
 NegExpr: '-' NegExpr
         @{ 
             @i @NegExpr.1.var_table@ = @NegExpr.0.var_table@;
-            @i @NegExpr.0.node@ = new_neg(@NegExpr.0.node@);
+            @i @NegExpr.0.node@ = new_neg(@NegExpr.1.node@);
 
             @reggen calc_register(@NegExpr.node@);
         @}
@@ -284,9 +284,11 @@ Term: '(' Expr ')'
         @}
     | Term '[' Expr ']'
         @{
-            @i @Term.node@ = new_empty();
             @i @Term.1.var_table@ = @Term.0.var_table@;
             @i @Expr.var_table@ = @Term.0.var_table@;
+            @i @Term.0.node@ = new_array_access(@Term.1.node@, @Expr.node@);
+
+            @reggen calc_register(@Term.0.node@);
         @}
     | IDENTIFIER
         @{

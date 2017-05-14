@@ -12,7 +12,8 @@ typedef enum node_type {
     NODE_STAT = 5,
     NODE_ADD = 6,
     NODE_MUL = 7,
-    NODE_NEG = 8 
+    NODE_NEG = 8,
+    NODE_ARRAY_ACCESS = 9
 } node_type;
 
 typedef struct tree_node_t {
@@ -48,5 +49,6 @@ tree_node *new_stat(tree_node *line, tree_node *next);
 tree_node *new_add(tree_node *left, tree_node *right);
 tree_node *new_mul(tree_node *left, tree_node *right);
 tree_node *new_neg(tree_node *expr);
+tree_node *new_array_access(tree_node *from, tree_node *offset);
 
 #endif
