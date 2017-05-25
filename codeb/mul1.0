@@ -1,0 +1,1 @@
+mul(x,y,a,b) return a*b; end;

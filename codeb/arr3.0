@@ -1,0 +1,3 @@
+arr3(x,y,z) 
+    return x[(y*2)+(z+(-4))]; 
+end;

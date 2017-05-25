@@ -1,0 +1,20 @@
+extern long f(long);
+
+long a[] = {123,45223,23523,-623623};
+
+
+int i;
+for(i=0; i<4;i++) {
+    long x=a[i];
+    
+    
+    long result=f(x);    
+    long expected = (x + 10)*2;
+    
+    if (result != expected) {
+        printf("expected: %ld, got: %ld\n",expected,result);
+        return 1==0;
+    }
+}
+
+return 1==1;

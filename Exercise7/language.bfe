@@ -1,0 +1,53 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+#include "tree.h"
+#include "code_gen.h"
+
+%}
+
+%start stat
+	
+%term T_NUM=2
+%term T_RET=3
+%term T_VAR=4
+%term T_STAT=5
+%term T_ADD=6
+%term T_MUL=7
+%term T_NEG=8
+%term T_ARR_ACC=9
+%term T_ASSIGN=10
+%term T_LEXPR_VAR=11
+
+%%
+
+stat:   ret                     # 0 #
+stat:   assign                  # 0 #            
+
+ret:    T_RET(expr)             # 1 # asm_ret(bnode);
+assign: T_ASSIGN(expr, lexpr)   # 1 # asm_assignment(bnode);
+
+expr:   cexpr                   # 1 # asm_cexpr_to_expr(bnode);
+
+expr:   T_ADD(expr, expr)       # 1 # asm_add(bnode, bnode->left->reg, bnode->right->reg);
+expr:   T_ADD(cexpr, expr)      # 1 # asm_add(bnode, to_literal(bnode->left->val), bnode->right->reg);
+expr:   T_ADD(expr, cexpr)      # 1 # asm_add(bnode, to_literal(bnode->right->val), bnode->left->reg);
+cexpr:  T_ADD(cexpr, cexpr)     # 0 # asm_add_const(bnode);
+
+expr:   T_MUL(expr, expr)       # 1 # asm_mul(bnode, bnode->left->reg, bnode->right->reg);
+expr:   T_MUL(expr, cexpr)      # 1 # asm_mul(bnode, to_literal(bnode->right->val), bnode->left->reg);
+expr:   T_MUL(cexpr, expr)      # 1 # asm_mul(bnode, to_literal(bnode->left->val), bnode->right->reg);
+cexpr:  T_MUL(cexpr, cexpr)     # 0 # asm_mul_const(bnode);
+
+
+expr:   T_NEG(expr)             # 1 # asm_neg(bnode, bnode->left->reg);
+cexpr:  T_NEG(cexpr)            # 0 # asm_neg_const(bnode);
+
+cexpr:  T_NUM                   # 0 #
+expr:   T_VAR                   # 1 # asm_var(bnode);
+expr:   T_ARR_ACC(expr, expr)   # 1 # asm_array_access(bnode);
+
+lexpr:  T_LEXPR_VAR             # 1 # asm_lexpr_var(bnode);
+
+%%

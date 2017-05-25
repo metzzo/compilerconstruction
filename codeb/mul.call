@@ -1,0 +1,13 @@
+extern long mul(long,long);
+
+long a[] = {10293,398223523523,23985,-101};
+long b[] = {2983,-13292732365236,2983,1383};
+
+int i;
+for(i=0; i<4;i++) {
+    if (! (mul(a[i],b[i]) == a[i]*b[i])) {
+        return 1==0;
+    }
+}
+
+return 1==1;
