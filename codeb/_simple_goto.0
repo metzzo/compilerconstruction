@@ -1,0 +1,5 @@
+f(x)
+    goto skip;
+    return 0;
+skip: return 42;
+end;

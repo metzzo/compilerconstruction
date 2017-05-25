@@ -1,0 +1,5 @@
+f(x)
+    if 1 != 0 goto skip;
+    return 0;
+skip: return 42;
+end;

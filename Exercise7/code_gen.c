@@ -34,15 +34,17 @@ void asm_label_def(char *name) {
 }
 
 
-void asm_assignment(tree_node *n) {
-    // TODO
-}
+
 void asm_lexpr_var(tree_node *n) {
     asm_move(n->reg, get_register(n->var_table, n->name));
 }
 
 void asm_goto(char *label) {
     fprintf(stdout, "\tjmp l_%s\n", label);
+}
+
+void asm_if(tree_node *n) {
+    
 }
 
 void asm_ret(tree_node *n) {
@@ -71,6 +73,19 @@ void asm_mul(tree_node *n, char *from, char *to) {
 
 void asm_neg(tree_node *n, char *from) {
     fprintf(stdout, "\tnegq %s\n", from);
+}
+
+void asm_and(tree_node *n) {
+
+}
+void asm_not(tree_node *n) {
+
+}
+void asm_greater(tree_node *n) {
+
+}
+void asm_notequ(tree_node *n) {
+
 }
 
 void asm_array_access(tree_node *n) {

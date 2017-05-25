@@ -15,7 +15,12 @@ typedef enum node_type {
     NODE_NEG = 8,
     NODE_ARRAY_ACCESS = 9,
     NODE_ASSIGNMENT = 10,
-    NODE_LEXPR_VAR = 11
+    NODE_LEXPR_VAR = 11,
+    NODE_IF = 12,
+    NODE_AND = 13,
+    NODE_NOT = 14,
+    NODE_GREATER = 15,
+    NODE_NOTEQU = 16
 } node_type;
 
 typedef struct tree_node_t {
@@ -47,6 +52,7 @@ tree_node *new_num(int64_t val);
 tree_node *new_var(table *var_table, char *name);
 tree_node *new_empty();
 tree_node *new_return(tree_node *ret);
+tree_node *new_if(tree_node *cond, char *name);
 tree_node *new_stat(tree_node *line, tree_node *next);
 tree_node *new_add(tree_node *left, tree_node *right);
 tree_node *new_mul(tree_node *left, tree_node *right);
@@ -54,5 +60,9 @@ tree_node *new_neg(tree_node *expr);
 tree_node *new_array_access(tree_node *from, tree_node *offset);
 tree_node *new_assignment(tree_node *lexpr, tree_node *expr);
 tree_node *new_lexpr_var(table *var_table, char *name);
+tree_node *new_and(tree_node *left, tree_node *right);
+tree_node *new_not(tree_node *n);
+tree_node *new_greater(tree_node *left, tree_node *right);
+tree_node *new_notequ(tree_node *left, tree_node *right);
 
 #endif

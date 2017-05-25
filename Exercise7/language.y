@@ -37,11 +37,11 @@ void burm_reduce(NODEPTR_TYPE bnode, int goalnt);
 @attributes { table *var_table; table *label_table; tree_node *node; int num_variables; } Stats 
 @attributes { table *var_table; table *label_table; table *new_var_table; tree_node *node; int num_variables; } Stat 
 @attributes { table *var_table; tree_node *node; } Expr 
-@attributes { table *var_table; } Cond 
+@attributes { table *var_table; tree_node *node; } Cond 
 @attributes { table *var_table; tree_node *node; } Term 
 @attributes { table *var_table; tree_node *node; } Lexpr 
-@attributes { table *var_table; } AndCond 
-@attributes { table *var_table; } Cterm 
+@attributes { table *var_table; tree_node *node; } AndCond 
+@attributes { table *var_table; tree_node *node; } Cterm 
 @attributes { table *var_table; tree_node *node; } AddExpr 
 @attributes { table *var_table; tree_node *node; } MulExpr 
 @attributes { table *var_table; tree_node *node; } NegExpr 
@@ -142,8 +142,11 @@ Stat: KW_RETURN Expr
             @checkident check_identifier(@Stat.label_table@, @IDENTIFIER.name@);
             @i @Cond.var_table@ = @Stat.var_table@;
             @i @Stat.new_var_table@ = create_table();
-            @i @Stat.node@ = new_empty();
+            @i @Stat.node@ = new_if(@IDENTIFIER.name@, @Cond.node@);
             @i @Stat.num_variables@ = 0;
+            
+            @reggen calc_register(@Stat.node@);
+            @codegen burm_label(@Stat.node@); burm_reduce(@Stat.node@,1);
         @}
     | KW_VAR IDENTIFIER '=' Expr
         @{
@@ -154,19 +157,20 @@ Stat: KW_RETURN Expr
 
             @reggen calc_register(@Stat.node@);
 
-            @codegen burm_label(@Stat.node@); burm_reduce(@Stat.node@,1);;
+            @codegen burm_label(@Stat.node@); burm_reduce(@Stat.node@,1);
         @}
     | Lexpr '=' Expr
         @{
             @i @Lexpr.var_table@ = @Stat.var_table@;
             @i @Expr.var_table@ = @Stat.var_table@;
             @i @Stat.new_var_table@ = create_table();
-            //@i @Stat.node@ = new_assignment(@Lexpr.node@, @Expr.node@);
-            @i @Stat.node@ = new_empty();
+            @i @Stat.node@ = new_assignment(@Lexpr.node@, @Expr.node@);
             
             @i @Stat.num_variables@ = 0;
 
-            //@codegen burm_label(@Expr.node@); burm_reduce(@Expr.node@,1); burm_label(@Lexpr.node@); burm_reduce(@Lexpr.node@,1); asm_assignment();
+            @reggen calc_register(@Stat.node@);
+
+            @codegen burm_label(@Stat.node@); burm_reduce(@Stat.node@,1);
         @}
     | Term
         @{
@@ -180,10 +184,12 @@ Stat: KW_RETURN Expr
 Cond: AndCond 
         @{
             @i @AndCond.var_table@ = @Cond.var_table@;
+            @i @Cond.node@ = @AndCond.node@;
         @}
     | KW_NOT Cterm
         @{
             @i @Cterm.var_table@ = @Cond.var_table@;
+            @i @Cond.node@ = new_not(@Cterm.node@);
         @}
     ;
 
@@ -191,26 +197,31 @@ AndCond: Cterm KW_AND AndCond
         @{
             @i @Cterm.var_table@ = @AndCond.0.var_table@;
             @i @AndCond.1.var_table@ = @AndCond.0.var_table@;
+            @i @AndCond.0.node@ = new_and(@Cterm.node@, @AndCond.1.node@);
         @}
     | Cterm
         @{
             @i @Cterm.var_table@ = @AndCond.var_table@;
+            @i @AndCond.node@ = @Cterm.node@;
         @}
     ;
 
 Cterm: '(' Cond ')'
         @{
             @i @Cond.var_table@ = @Cterm.var_table@;
+            @i @Cterm.node@ = @Cond.node@;
         @}
     | Expr OP_NOTEQU Expr
         @{
             @i @Expr.0.var_table@ = @Cterm.var_table@;
             @i @Expr.1.var_table@ = @Cterm.var_table@;
+            @i @Cterm.node@ = new_notequ(@Expr.0.node@, @Expr.1.node@);
         @}
     | Expr '>' Expr
         @{
             @i @Expr.0.var_table@ = @Cterm.var_table@;
             @i @Expr.1.var_table@ = @Cterm.var_table@;
+            @i @Cterm.node@ = new_greater(@Expr.0.node@, @Expr.1.node@);
         @}
     ;
 

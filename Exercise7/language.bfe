@@ -19,14 +19,21 @@
 %term T_ARR_ACC=9
 %term T_ASSIGN=10
 %term T_LEXPR_VAR=11
+%term T_IF=12
+%term T_AND=13
+%term T_NOT=14
+%term T_GREATER=15
+%term T_NOTEQU=16
 
 %%
 
 stat:   ret                     # 0 #
-stat:   assign                  # 0 #            
+stat:   assign                  # 0 #      
+stat:   ifthen                  # 0 #      
 
 ret:    T_RET(expr)             # 1 # asm_ret(bnode);
-assign: T_ASSIGN(expr, lexpr)   # 1 # asm_assignment(bnode);
+assign: T_ASSIGN(expr, lexpr)   # 0 #
+ifthen: T_IF(cond)              # 1 # asm_if(bnode);
 
 expr:   cexpr                   # 1 # asm_cexpr_to_expr(bnode);
 
@@ -49,5 +56,10 @@ expr:   T_VAR                   # 1 # asm_var(bnode);
 expr:   T_ARR_ACC(expr, expr)   # 1 # asm_array_access(bnode);
 
 lexpr:  T_LEXPR_VAR             # 1 # asm_lexpr_var(bnode);
+
+cond:   T_AND(cond,cond)        # 1 # asm_and(bnode);
+cond:   T_NOT(cond)             # 1 # asm_not(bnode);
+cond:   T_GREATER(expr, expr)   # 1 # asm_greater(bnode);
+cond:   T_NOTEQU(expr, expr)    # 1 # asm_notequ(bnode);
 
 %%
