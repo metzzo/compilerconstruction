@@ -256,10 +256,12 @@ Lexpr: IDENTIFIER
         @}
     | Term '[' Expr ']'
         @{
-            @i @Lexpr.node@ = new_empty();
+            @i @Lexpr.node@ = new_lexpr_array_access(@Term.node@, @Expr.node@);
 
             @i @Term.var_table@ = @Lexpr.var_table@;
             @i @Expr.var_table@ = @Lexpr.var_table@;
+
+            @reggen calc_register(@Lexpr.0.node@);
         @}
     ;
 

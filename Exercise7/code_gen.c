@@ -49,6 +49,17 @@ void asm_lexpr_var(tree_node *n) {
     asm_move(n->reg, get_register(n->var_table, n->name));
 }
 
+
+void asm_lexpr_array_access(tree_node *n) {
+    assert(n != NULL);
+    assert(n->left->reg != NULL);
+    assert(n->right->reg != NULL);
+    
+    char to_reg[100];
+    sprintf(to_reg, "0(%s, %s, 8)", n->left->reg, n->right->reg);
+    asm_move(n->reg, to_reg);
+}
+
 void asm_goto(char *label) {
     assert(label != NULL);
     
@@ -139,6 +150,8 @@ void asm_notequ(tree_node *n) {
 
 void asm_array_access(tree_node *n) {
     assert(n != NULL);
+    assert(n->left->reg != NULL);
+    assert(n->right->reg != NULL);
     
     char from_reg[100];
     sprintf(from_reg, "0(%s, %s, 8)", n->left->reg, n->right->reg);

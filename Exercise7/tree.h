@@ -20,7 +20,8 @@ typedef enum node_type {
     NODE_AND = 13,
     NODE_NOT = 14,
     NODE_GREATER = 15,
-    NODE_NOTEQU = 16
+    NODE_NOTEQU = 16,
+    NODE_LEXPR_ARRAY_ACCESS=17
 } node_type;
 
 typedef struct tree_node_t {
@@ -61,6 +62,7 @@ tree_node *new_neg(tree_node *expr);
 tree_node *new_array_access(tree_node *from, tree_node *offset);
 tree_node *new_assignment(tree_node *lexpr, tree_node *expr);
 tree_node *new_lexpr_var(table *var_table, char *name);
+tree_node *new_lexpr_array_access(tree_node *from, tree_node *offset);
 tree_node *new_and(tree_node *left, tree_node *right);
 tree_node *new_not(tree_node *left, char *continue_label, char *exit_label);
 tree_node *new_greater(tree_node *left, tree_node *right, char  *label);

@@ -77,6 +77,10 @@ tree_node *new_lexpr_var(table *var_table, char *name) {
     return n;
 }
 
+tree_node *new_lexpr_array_access(tree_node *from, tree_node *offset) {
+    return new_node(NODE_LEXPR_ARRAY_ACCESS, from, offset);
+}
+
 tree_node *new_and(tree_node *left, tree_node *right) {
     return new_node(NODE_AND, left, right);
 }
@@ -144,6 +148,11 @@ void calc_register(tree_node *node) {
         case NODE_NEG:
             assert(node->reg != NULL);
             node->left->reg = node->reg;
+            break;
+        case NODE_LEXPR_ARRAY_ACCESS:
+            assert(node->reg != NULL);
+            node->left->reg = next_tmp_reg(node->reg);
+            node->right->reg = next_tmp_reg(node->left->reg);
             break;
         case NODE_ARRAY_ACCESS:
             assert(node->reg != NULL);

@@ -24,6 +24,7 @@
 %term T_NOT=14
 %term T_GREATER=15
 %term T_NOTEQU=16
+%term T_LEXPR_ARRAY_ACCESS=17
 
 %%
 
@@ -56,6 +57,7 @@ expr:   T_VAR                   # 1 # asm_var(bnode);
 expr:   T_ARR_ACC(expr, expr)   # 1 # asm_array_access(bnode);
 
 lexpr:  T_LEXPR_VAR             # 1 # asm_lexpr_var(bnode);
+lexpr:  T_LEXPR_ARRAY_ACCESS(expr, expr) # 1 # asm_lexpr_array_access(bnode);
 
 cond:   T_AND(cond,cond)        # 1 # asm_and(bnode);
 cond:   T_NOT(cond)             # 1 # asm_not(bnode);

@@ -23,6 +23,7 @@ void asm_greater(tree_node *n);
 void asm_notequ(tree_node *n);
 
 void asm_lexpr_var(tree_node *n);
+void asm_lexpr_array_access(tree_node *n);
 
 void asm_add_const(tree_node *n);
 void asm_mul_const(tree_node *n);
