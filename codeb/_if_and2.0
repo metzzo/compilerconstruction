@@ -1,0 +1,9 @@
+f(asdf)
+    var x = 0;
+    var y = 1;
+    var a = -3;
+    var b = -1;
+    if x != y and a > b goto skip;
+    return 0;
+skip: return 42;
+end;

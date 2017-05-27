@@ -1,0 +1,7 @@
+f(asdf)
+    var a = 1;
+    var b = 0;
+    if a > b goto skip;
+    return 0;
+skip: return 42;
+end;

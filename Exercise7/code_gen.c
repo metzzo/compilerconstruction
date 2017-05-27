@@ -15,6 +15,9 @@ void asm_move(char *from_reg, char *to_reg) {
 }
 
 void asm_func_def(char *name, int num_variables) {
+    assert(name != NULL);
+    assert(num_variables >= 0);
+
     fprintf(stdout, "\t.globl %s\n",name);
 	fprintf(stdout, "\t.type %s, @function\n",name);
 	fprintf(stdout, "%s:\n",name);
@@ -30,48 +33,83 @@ void asm_func_def(char *name, int num_variables) {
 
 
 void asm_label_def(char *name) {
+    assert(name != NULL);
+
     fprintf(stdout, "l_%s:\n", name);
 }
 
 
 
 void asm_lexpr_var(tree_node *n) {
+    assert(n != NULL);
+    assert(n->reg != NULL);
+    assert(n->var_table != NULL);
+    assert(n->name != NULL);
+    
     asm_move(n->reg, get_register(n->var_table, n->name));
 }
 
 void asm_goto(char *label) {
+    assert(label != NULL);
+    
     fprintf(stdout, "\tjmp l_%s\n", label);
 }
 
 void asm_if(tree_node *n) {
+    assert(n != NULL);
     
 }
 
 void asm_ret(tree_node *n) {
+    assert(n != NULL);
+    assert(n->reg != NULL);
+    assert(n->left != NULL);
+    
     asm_move(n->left->reg, n->reg);
     fprintf(stdout, "\tleave\n");
 	fprintf(stdout, "\tret\n");
 }
 
 void asm_cexpr_to_expr(tree_node *n) {
+    assert(n != NULL);
+    assert(n->reg != NULL);
+    
     asm_move(to_literal(n->val), n->reg);
 }
 
 void asm_var(tree_node *n) {
+    assert(n != NULL);
+    assert(n->reg != NULL);
+    assert(n->var_table != NULL);
+    assert(n->name != NULL);
+
     asm_move(get_register(n->var_table, n->name), n->reg);
 }
 
 void asm_add(tree_node *n, char *from, char *to) {
+    assert(n != NULL);
+    assert(from != NULL);
+    assert(to != NULL);
+    assert(n->reg != NULL);
+
     fprintf(stdout, "\taddq %s, %s\n", from, to);
     asm_move(to, n->reg);
 }
 
 void asm_mul(tree_node *n, char *from, char *to) {
+    assert(n != NULL);
+    assert(from != NULL);
+    assert(to != NULL);
+    assert(n->reg != NULL);
+
     fprintf(stdout, "\timulq %s, %s\n", from, to);
     asm_move(to, n->reg);
 }
 
 void asm_neg(tree_node *n, char *from) {
+    assert(n != NULL);
+    assert(from != NULL);
+
     fprintf(stdout, "\tnegq %s\n", from);
 }
 
@@ -79,29 +117,52 @@ void asm_and(tree_node *n) {
 
 }
 void asm_not(tree_node *n) {
-
+    fprintf(stdout, "\tjmp l_%s\n", n->name2);
+    fprintf(stdout, "l_%s:\n", n->name);
 }
 void asm_greater(tree_node *n) {
+    assert(n != NULL);
+    assert(n->left->reg != NULL);
+    assert(n->right->reg != NULL);
+    assert(n->name != NULL);
 
+    fprintf(stdout, "\tcmp %s, %s\n\tjl l_%s\n", n->left->reg, n->right->reg, n->name);
 }
 void asm_notequ(tree_node *n) {
+    assert(n != NULL);
+    assert(n->left->reg != NULL);
+    assert(n->right->reg != NULL);
+    assert(n->name != NULL);
 
+    fprintf(stdout, "\tcmp %s, %s\n\tjnz l_%s\n", n->left->reg, n->right->reg, n->name);
 }
 
 void asm_array_access(tree_node *n) {
+    assert(n != NULL);
+    
     char from_reg[100];
     sprintf(from_reg, "0(%s, %s, 8)", n->left->reg, n->right->reg);
     asm_move(from_reg, n->reg);
 }
 
 void asm_add_const(tree_node *n) {
+    assert(n != NULL);
+    assert(n->left != NULL);
+    assert(n->right != NULL);
+    
     n->val = n->left->val + n->right->val;
 }
 void asm_mul_const(tree_node *n) {
-    assert(0);
+    assert(n != NULL);
+    assert(n->left != NULL);
+    assert(n->right != NULL);
+    
     n->val = n->left->val * n->right->val;
 }
 void asm_neg_const(tree_node *n) {
+    assert(n != NULL);
+    assert(n->left != NULL);
+    
     n->val = -n->left->val;
 }
 

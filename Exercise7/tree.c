@@ -38,6 +38,7 @@ tree_node *new_return(tree_node *ret) {
 }
 
 tree_node *new_if(tree_node *cond, char *name) {
+    assert(cond != NULL);
     tree_node *node = new_node(NODE_IF, cond, NULL);
     node->name = name;
     return node;
@@ -79,14 +80,21 @@ tree_node *new_lexpr_var(table *var_table, char *name) {
 tree_node *new_and(tree_node *left, tree_node *right) {
     return new_node(NODE_AND, left, right);
 }
-tree_node *new_not(tree_node *n) {
-    return new_node(NODE_NOT, n, NULL);
+tree_node *new_not(tree_node *left, char *continue_label, char *exit_label) {
+    tree_node *n = new_node(NODE_NOT, left, NULL);
+    n->name = continue_label;
+    n->name2 = exit_label;
+    return n;
 }
-tree_node *new_greater(tree_node *left, tree_node *right) {
-    return new_node(NODE_GREATER, left, right);
+tree_node *new_greater(tree_node *left, tree_node *right, char *label) {
+    tree_node *n = new_node(NODE_GREATER, left, right);
+    n->name = label;
+    return n;
 }
-tree_node *new_notequ(tree_node *left, tree_node *right) {
-    return new_node(NODE_NOTEQU, left, right);
+tree_node *new_notequ(tree_node *left, tree_node *right, char *label) {
+    tree_node *n = new_node(NODE_NOTEQU, left, right);
+    n->name = label;
+    return n;
 }
 
 char *tmp_reg_names[]={"%rax", "%r10", "%r11", "%r9", "%r8", "%rcx", "%rdx", "%rsi", "%rdi"};
@@ -115,7 +123,6 @@ void calc_register(tree_node *node) {
         case NODE_NUM:
         case NODE_EMPTY:
         case NODE_VAR:
-            node->reg = NULL;
             break;
         case NODE_RETURN:
             node->reg = "%rax";
@@ -127,10 +134,13 @@ void calc_register(tree_node *node) {
             break;
         case NODE_ADD:
         case NODE_MUL:
+        case NODE_NOTEQU:
+        case NODE_GREATER:
             assert(node->reg != NULL);
             node->left->reg = node->reg;
             node->right->reg = next_tmp_reg(node->left->reg);
             break;
+        case NODE_NOT:
         case NODE_NEG:
             assert(node->reg != NULL);
             node->left->reg = node->reg;
@@ -143,6 +153,10 @@ void calc_register(tree_node *node) {
             break;
         case NODE_IF:
             node->left->reg = next_tmp_reg(NULL);
+            break;
+        case NODE_AND:
+            node->left->reg = node->reg;
+            node->right->reg = next_tmp_reg(NULL);
             break;
         default:
             assert(0);

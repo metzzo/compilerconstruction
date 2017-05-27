@@ -30,6 +30,7 @@ typedef struct tree_node_t {
 	struct burm_state *label;
     char *reg;
     char *name;
+    char *name2;
 	int64_t val;
     table *var_table;
 } tree_node;
@@ -61,8 +62,8 @@ tree_node *new_array_access(tree_node *from, tree_node *offset);
 tree_node *new_assignment(tree_node *lexpr, tree_node *expr);
 tree_node *new_lexpr_var(table *var_table, char *name);
 tree_node *new_and(tree_node *left, tree_node *right);
-tree_node *new_not(tree_node *n);
-tree_node *new_greater(tree_node *left, tree_node *right);
-tree_node *new_notequ(tree_node *left, tree_node *right);
+tree_node *new_not(tree_node *left, char *continue_label, char *exit_label);
+tree_node *new_greater(tree_node *left, tree_node *right, char  *label);
+tree_node *new_notequ(tree_node *left, tree_node *right, char *label);
 
 #endif

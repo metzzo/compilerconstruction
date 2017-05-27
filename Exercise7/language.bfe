@@ -29,11 +29,11 @@
 
 stat:   ret                     # 0 #
 stat:   assign                  # 0 #      
-stat:   ifthen                  # 0 #      
+stat:   ifgoto                  # 0 #      
 
 ret:    T_RET(expr)             # 1 # asm_ret(bnode);
 assign: T_ASSIGN(expr, lexpr)   # 0 #
-ifthen: T_IF(cond)              # 1 # asm_if(bnode);
+ifgoto: T_IF(cond)              # 1 # asm_if(bnode);
 
 expr:   cexpr                   # 1 # asm_cexpr_to_expr(bnode);
 
@@ -59,7 +59,11 @@ lexpr:  T_LEXPR_VAR             # 1 # asm_lexpr_var(bnode);
 
 cond:   T_AND(cond,cond)        # 1 # asm_and(bnode);
 cond:   T_NOT(cond)             # 1 # asm_not(bnode);
+
 cond:   T_GREATER(expr, expr)   # 1 # asm_greater(bnode);
 cond:   T_NOTEQU(expr, expr)    # 1 # asm_notequ(bnode);
+
+
+
 
 %%
