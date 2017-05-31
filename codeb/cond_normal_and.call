@@ -1,0 +1,2 @@
+extern long f(long,long);
+RET(f(5,10) == 100 && f(3, 9) == 64 && f(-6,-2) == -1);

@@ -26,6 +26,22 @@ char *gen_not_label() {
     return label_name;
 }
 
+char *gen_and_label() {
+    static int label_count = 0;
+    char *label_name = malloc(100*sizeof(char));
+    sprintf(label_name, "andlabel_%d", label_count);
+    label_count++;
+    return label_name;
+}
+
+char *gen_if_label() {
+    static int label_count = 0;
+    char *label_name = malloc(100*sizeof(char));
+    sprintf(label_name, "iflabel_%d", label_count);
+    label_count++;
+    return label_name;
+}
+
 %}
 
 %token KW_RETURN
@@ -150,9 +166,9 @@ Stat: KW_RETURN Expr
             @checkident check_identifier(@Stat.label_table@, @IDENTIFIER.name@);
             @i @Cond.var_table@ = @Stat.var_table@;
             @i @Stat.new_var_table@ = create_table();
-            @i @Stat.node@ = new_if(@Cond.node@, @IDENTIFIER.name@);
+            @i @Stat.node@ = new_if(@Cond.node@, @Cond.label@, @IDENTIFIER.name@);
             @i @Stat.num_variables@ = 0;
-            @i @Cond.label@ = @IDENTIFIER.name@;
+            @i @Cond.label@ = gen_if_label();
             
             @reggen calc_register(@Stat.node@);
             @codegen burm_label(@Stat.node@); burm_reduce(@Stat.node@,1);
@@ -210,9 +226,9 @@ AndCond: Cterm KW_AND AndCond
         @{
             @i @Cterm.var_table@ = @AndCond.0.var_table@;
             @i @AndCond.1.var_table@ = @AndCond.0.var_table@;
-            @i @AndCond.0.node@ = new_and(@Cterm.node@, @AndCond.1.node@);
+            @i @AndCond.0.node@ = new_and(@Cterm.node@, @AndCond.1.node@, @Cterm.label@, @AndCond.0.label@);
             @i @Cterm.label@ = @AndCond.0.label@;
-            @i @AndCond.1.label@ = @AndCond.0.label@;
+            @i @AndCond.1.label@ = @Cterm.label@;
 
             @reggen calc_register(@AndCond.0.node@);
         @}

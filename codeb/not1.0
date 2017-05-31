@@ -1,0 +1,5 @@
+f(a)
+if not a > 0 goto True;
+return 0;
+True: return 1;
+end;

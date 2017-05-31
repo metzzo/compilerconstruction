@@ -69,6 +69,8 @@ void asm_goto(char *label) {
 void asm_if(tree_node *n) {
     assert(n != NULL);
     
+    fprintf(stdout, "\tjmp l_%s\n", n->name2);
+    fprintf(stdout, "l_%s:\n", n->name);
 }
 
 void asm_ret(tree_node *n) {
@@ -125,8 +127,13 @@ void asm_neg(tree_node *n, char *from) {
 }
 
 void asm_and(tree_node *n) {
+    /*assert(n != NULL);
+    assert(n->name != NULL);
 
+    fprintf(stdout, "\tjmp l_%s\n", n->name2);
+    fprintf(stdout, "l_%s:\n", n->name);*/
 }
+
 void asm_not(tree_node *n) {
     fprintf(stdout, "\tjmp l_%s\n", n->name2);
     fprintf(stdout, "l_%s:\n", n->name);
@@ -137,7 +144,7 @@ void asm_greater(tree_node *n) {
     assert(n->right->reg != NULL);
     assert(n->name != NULL);
 
-    fprintf(stdout, "\tcmp %s, %s\n\tjl l_%s\n", n->left->reg, n->right->reg, n->name);
+    fprintf(stdout, "\tcmp %s, %s\n\tjge l_%s\n", n->left->reg, n->right->reg, n->name);
 }
 void asm_notequ(tree_node *n) {
     assert(n != NULL);
@@ -145,7 +152,7 @@ void asm_notequ(tree_node *n) {
     assert(n->right->reg != NULL);
     assert(n->name != NULL);
 
-    fprintf(stdout, "\tcmp %s, %s\n\tjnz l_%s\n", n->left->reg, n->right->reg, n->name);
+    fprintf(stdout, "\tcmp %s, %s\n\tjz l_%s\n", n->left->reg, n->right->reg, n->name);
 }
 
 void asm_array_access(tree_node *n) {

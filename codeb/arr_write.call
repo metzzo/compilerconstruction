@@ -1,15 +1,19 @@
-extern long f(long);
+extern long f(long,long);
 
 long a[] = {123,45223,23523,-623623};
+long b[] = {2323,235,-21983,978298};
+long c[] = {12235,-42352323,22362523,2937};
 
 
 int i;
 for(i=0; i<4;i++) {
     long x=a[i];
+    long y=b[i];
+    long z=c[i];
     
     
-    long result=f(x);    
-    long expected = 0;
+    long result=f((long) a,i);    
+    long expected = a[i];
     
     if (result != expected) {
         printf("expected: %ld, got: %ld\n",expected,result);

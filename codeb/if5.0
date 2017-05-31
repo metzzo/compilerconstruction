@@ -1,0 +1,12 @@
+(* simple not > and != with parens *)
+
+f(a,b)
+if ((not a != b)) goto One;
+if ((not a > b)) goto Two;
+return 0;
+One:
+return 1;
+Two:
+return 2;
+end;
+

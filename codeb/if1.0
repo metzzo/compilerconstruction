@@ -1,0 +1,9 @@
+(* simple > *)
+
+f(a,b)
+if a > b goto True;
+return 0;
+True:
+return 1;
+end;
+

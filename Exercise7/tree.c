@@ -37,10 +37,11 @@ tree_node *new_return(tree_node *ret) {
     return new_node(NODE_RETURN, ret, NULL);
 }
 
-tree_node *new_if(tree_node *cond, char *name) {
+tree_node *new_if(tree_node *cond, char *label, char *exit_label) {
     assert(cond != NULL);
     tree_node *node = new_node(NODE_IF, cond, NULL);
-    node->name = name;
+    node->name = label;
+    node->name2 = exit_label;
     return node;
 }
 
@@ -81,8 +82,11 @@ tree_node *new_lexpr_array_access(tree_node *from, tree_node *offset) {
     return new_node(NODE_LEXPR_ARRAY_ACCESS, from, offset);
 }
 
-tree_node *new_and(tree_node *left, tree_node *right) {
-    return new_node(NODE_AND, left, right);
+tree_node *new_and(tree_node *left, tree_node *right, char *label, char *exit_label) {
+    tree_node *n = new_node(NODE_AND, left, right);
+    n->name = label;
+    n->name2 = exit_label;
+    return n;
 }
 tree_node *new_not(tree_node *left, char *continue_label, char *exit_label) {
     tree_node *n = new_node(NODE_NOT, left, NULL);

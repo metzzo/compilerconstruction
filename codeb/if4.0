@@ -1,0 +1,9 @@
+(* simple not != *)
+
+f(a,b)
+if not a != b goto True;
+return 0;
+True:
+return 1;
+end;
+
