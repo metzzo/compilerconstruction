@@ -1,0 +1,29 @@
+extern long f(long);
+
+long a[] = {0,1,2,3,100,1000,-623623};
+
+int fibonacci(int n)
+{
+   if ( n <= 0 )
+      return 0;
+   else if ( n == 1 )
+      return 1;
+   else
+      return ( fibonacci(n-1) + fibonacci(n-2) );
+} 
+
+int i;
+for(i=0; i<4;i++) {
+    long x=a[i];
+    
+    
+    long result=f(x);    
+    long expected = fibonacci(x);
+    
+    if (result != expected) {
+        printf("expected: %ld, got: %ld (%ld)\n",expected,result, x);
+        return 1==0;
+    }
+}
+
+return 1==1;

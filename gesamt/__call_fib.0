@@ -1,0 +1,15 @@
+f(a)
+    return fib(a);
+end;
+
+fib(a)
+    if not a > 0 goto zero;
+    if not a != 1 goto one;
+    goto general;
+zero:
+    return 0;
+one:
+    return 1;
+general:
+    return fib(a + (-2)) + fib(a + (-1));
+end;

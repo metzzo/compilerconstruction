@@ -1,0 +1,24 @@
+extern long f(long, long, long, long, long);
+
+long a[] = {123,45223,23523,-623623};
+long b[] = {124,45224,23524,-623624};
+long c[] = {125,45225,23525,-623625};
+long d[] = {126,45226,23526,-623626};
+long e[] = {127,45227,23527,-623627};
+
+
+int i;
+for(i=0; i<4;i++) {
+    long x=a[i];
+    
+    
+    long result=f(a[i], b[i], c[i], d[i], e[i]);    
+    long expected = a[i] + 1 + b[i] + 1 + c[i] + 1 + d[i] + 1 + e[i] + 1 + 1;
+    
+    if (result != expected) {
+        printf("expected: %ld, got: %ld\n",expected,result);
+        return 1==0;
+    }
+}
+
+return 1==1;

@@ -1,0 +1,18 @@
+f(a)
+    var z = y(a);
+    return x(z);
+end;
+
+x(a)
+    var b = y(a);
+    var c = 42;
+    var d = 1337;
+    return b;
+end;
+
+y(a)
+    var b = 2*a;
+    var c = 42;
+    var d = 1337;
+    return 2*b;
+end;

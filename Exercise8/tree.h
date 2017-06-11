@@ -33,6 +33,7 @@ typedef struct tree_node_t {
     struct tree_node_t *right;
 	struct burm_state *label;
     char *reg;
+    char *reg2;
     char *name;
     char *name2;
 	int64_t val;

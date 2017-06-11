@@ -1,0 +1,27 @@
+extern long f(long,long);
+
+long a[] = {123,45223,23523,0, 999999};
+long b[] = {1,2,3,0, 4};
+
+long calc(long z) {
+    if (z == 0) {
+        return 0;
+    } else {
+        return calc(z-1) + 1;
+    }
+}
+
+int i;
+for(i=0; i<4;i++) {
+
+    long result=f(a[i], b[i]);    
+    long expected = calc(a[i]+b[i]+1) + calc(a[i]+b[i] + 2) + 1+b[i];
+    
+    if (result != expected) {
+        printf("expected: %ld, got: %ld\n",expected,result);
+        return 1==0;
+    }
+}
+
+return 1==1;
+

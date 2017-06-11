@@ -190,6 +190,9 @@ void asm_neg_const(tree_node *n) {
 
 void asm_param(tree_node *n) {
     assert(n != NULL);
+    assert(n->reg != NULL);
+
+    asm_move(n->reg, input_registers[n->val]);
 }
 void asm_func_call(tree_node *n) {
     assert(n != NULL);
@@ -197,11 +200,35 @@ void asm_func_call(tree_node *n) {
 
     fprintf(stdout, "\tcall %s\n", n->name);
     for (int i = 0; i < n->val; i++) {
-        fprintf(stdout, "\tpop %s\n", next_tmp_reg(n->reg));
+        fprintf(stdout, "\tpop %s\n", input_registers[n->val - i - 1]);
     }
     asm_move("%rax", n->reg);
+    //if (strcmp("%rax", n->reg) != 0) {
+    //    fprintf(stdout, "\tpop %%rax\n");
+    //}
+    
+    char *current_tmp = next_tmp_reg(NULL);
+    char *regs[20];
+    int count = 0;
+    while(strcmp(current_tmp, n->reg) != 0) {
+        regs[count] = current_tmp;
+        count++;
+        current_tmp = next_tmp_reg(current_tmp);
+    }
+    for(int i = 0; i < count; i++) {
+        fprintf(stdout, "\tpop %s\n", regs[i]);
+    }
 }
 void asm_save_stack(tree_node *n) {
+    //if (strcmp("%rax", n->reg) != 0) {
+    //    fprintf(stdout, "\tpush %%rax\n");
+    //}
+    char *current_tmp = next_tmp_reg(NULL);
+    while(strcmp(current_tmp, n->reg) != 0) {
+        fprintf(stdout, "\tpush %s\n", current_tmp);
+        current_tmp = next_tmp_reg(current_tmp);
+    }
+    
     for (int i = 0; i < n->val; i++) {
         fprintf(stdout, "\tpush %s\n", input_registers[i]);
     }

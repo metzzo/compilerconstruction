@@ -13,6 +13,7 @@ tree_node *new_node(node_type type, tree_node *left, tree_node *right) {
     n->name = NULL;
     n->var_table = NULL;
     n->reg = NULL;
+    n->reg2 = NULL;
 	return n;
 }
 
@@ -147,16 +148,23 @@ void calc_register(tree_node *node) {
         case NODE_VAR:
             break;
         case NODE_FUNC_CALL:
-            node->right->reg = input_registers[0];
+            node->left->reg = node->reg;
+            node->right->reg = node->reg;
+            node->right->val = 0;
             break;
         case NODE_PARAM:
             node->left->reg = node->reg;
+            node->right->reg = next_tmp_reg(node->reg);
+            node->right->val = node->val + 1;
+
+            /*node->left->reg = node->reg2;
             int index = 0;
             while (strcmp(input_registers[index], node->reg) != 0) {
                 index++;
             }
             
             node->right->reg = input_registers[index + 1];
+            node->right->reg2 = next_tmp_reg(node->reg2);*/
             break;
         case NODE_RETURN:
             node->reg = next_tmp_reg(NULL);

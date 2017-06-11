@@ -1,0 +1,10 @@
+f(a, b)
+    return x(a + b + 1) + b + 1 + x(a + 2 + b);
+end;
+
+x(z)
+    if not z != 0 goto cancel;
+    return x(z+(-1)) + 1;
+cancel:
+    return 0;
+end;

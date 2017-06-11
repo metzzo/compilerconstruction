@@ -1,0 +1,7 @@
+f(a, b, c, d, e)
+    return x(a + 1, b + 1, c + 1, d + 1, e + 1);
+end;
+
+x(a, b, c, d, e)
+    return a + b + c + d + e + 1;
+end;
