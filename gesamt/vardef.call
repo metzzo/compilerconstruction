@@ -1,0 +1,2 @@
+extern long add(long,long);
+RET(add(100,300) == 30003 && add(-50,-123)==6153);

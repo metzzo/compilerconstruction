@@ -1,0 +1,5 @@
+f(a,b,c,d)
+if a >b and (not( b != c and (not (c != 5 and (not a != 0) and c != d)))) goto True;                                         return 0;        
+True:
+return 1;
+end;

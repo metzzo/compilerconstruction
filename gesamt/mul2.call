@@ -1,0 +1,14 @@
+extern long mul(long,long);
+
+long a[] = {123,45223,23523,-623623};
+long b[] = {234,-6523,23423,42342};
+
+int i;
+for(i=0; i<4;i++) {
+    if (! (mul(a[i],b[i]) == a[i]*b[i]*a[i]*b[i])) {
+        printf("mul(%d,%d) = %d",a[i],b[i],mul(a[i],b[i]));
+        return 1==0;
+    }
+}
+
+return 1==1;

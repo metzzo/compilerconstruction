@@ -1,0 +1,7 @@
+f(asdf)
+    var x = 1;
+    var y = 0;
+    if (not y > x) and (not x != y+1) and (not (not ((not y > x) and (not (not x > y))))) goto skip;
+    return 0;
+skip: return 42;
+end;

@@ -1,0 +1,7 @@
+f(x,y)
+	var test = 0;
+	if (x > y)
+		goto exit;
+	test = x + y;
+exit:
+	return test; end;

@@ -1,0 +1,8 @@
+f(arg1, arg2)
+	var tmp1 = arg1 + 5;
+if not (tmp1 != arg2 and tmp1 > arg2)
+	goto exit;
+	tmp1 = tmp1*tmp1;
+exit:
+	return tmp1;
+end;

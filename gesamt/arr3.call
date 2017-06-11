@@ -1,0 +1,18 @@
+extern long arr3(long,long,long);
+
+long a[] = {123,45223,23523,-623623,2398};
+long b[] = {2323,235,-21983,978298};
+long c[] = {12235,-42352323,22362523,2937};
+
+
+int i=2;
+ 
+long result=arr3((long) a,i,i);    
+long expected = a[(i*2)+(i-4)]; 
+
+if (result != expected) {
+    printf("expected: %ld, got: %ld\n",expected,result);
+    return 1==0;
+}
+
+return 1==1;

@@ -1,0 +1,22 @@
+extern long f();
+
+return f() == -5;
+
+long a[] = {123,45223,23523,-623623};
+long b[] = {234,-6523,23423,42342};
+long c[] = {20,23,12,56};
+
+int i;
+for(i=0; i<4;i++) {
+    long result=binom(a[i],b[i],c[i]); 
+    long x=a[i]; long y=b[i]; long z=c[i];
+        
+    long expected = ((x+y)*(x+z)*(y+z))+x+y;
+    
+    if (result != expected) {
+        printf("expected: %ld, got: %ld",expected,result);
+        return 1==0;
+    }
+}
+
+return 1==1;

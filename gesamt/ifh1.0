@@ -1,0 +1,7 @@
+f(a,b,c)
+if a > 3 and (not (a > b and (not (b != c and a != b)))) goto True;
+return 0;
+True:
+return 1;
+end;
+

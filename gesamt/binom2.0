@@ -1,0 +1,1 @@
+binom(x,y,z) return ((x+y)*(x+z)*(y+z))+x+y; end;

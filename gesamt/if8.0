@@ -1,0 +1,8 @@
+(* simple and with != and > and parens *)
+
+f(a,b,c)
+if ((a != b) and (b != c)) goto True;
+return 0;
+True:
+return 1;
+end;
