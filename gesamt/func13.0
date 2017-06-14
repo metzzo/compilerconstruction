@@ -1,0 +1,4 @@
+(* check if compiler overwrites parameters *)
+
+h(n) return 4*n; end;
+f(n) return g(n+2,h(n+4),n+6); end;

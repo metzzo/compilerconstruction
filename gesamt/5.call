@@ -1,0 +1,12 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+extern long even(long a);
+extern long odd(long a);
+
+int main()
+{
+    printf("result = %li, should be = 1\n", even(2));
+    printf("result = %li, should be = 0\n", odd(20));
+    return 0;
+}

@@ -1,0 +1,12 @@
+(* check if compiler saves locals*)
+
+g(n) return n; end;
+
+f(n)
+	var c = n+1;
+	var d = n;
+
+	(* id is called before neq,
+	   id overwrites locals *)
+	return g(neq(d, c, id(d+(-c))));
+end;

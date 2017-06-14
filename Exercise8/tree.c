@@ -111,6 +111,7 @@ tree_node *new_func(char *name, int param_num, tree_node *param) {
     n->val = param_num;
     return n;
 }
+
 tree_node *new_param(tree_node *expr, tree_node *right) {
     return new_node(NODE_PARAM, expr, right);
 }
@@ -120,7 +121,7 @@ tree_node *new_save_stack(int param_num) {
     return n;
 }
 
-char *tmp_reg_names[]={"%rax", "%r10", "%r11", "%r9", "%r8", "%rcx", "%rdx", "%rsi", "%rdi", "%rsi", "%rdx", "%rcx", "%r8", "%r9"};
+char *tmp_reg_names[]={"%rax", "%r10", "%r11", "%r12", "%r13", "%r14", "%r15", "%rbx", "%r9", "%r8", "%rcx", "%rdx", "%rsi", "%rdi"};
 
 char *next_tmp_reg(char *current) {
     int index;
@@ -139,6 +140,13 @@ char *next_tmp_reg(char *current) {
     return tmp_reg_names[index];
 }
 
+void root_term(tree_node *node) {
+    if (node->reg == NULL) {
+        node->reg = next_tmp_reg(NULL);
+    }
+    calc_register(node);
+}
+
 void calc_register(tree_node *node) {
     assert(node != NULL);
 
@@ -148,23 +156,13 @@ void calc_register(tree_node *node) {
         case NODE_VAR:
             break;
         case NODE_FUNC_CALL:
-            node->left->reg = node->reg;
             node->right->reg = node->reg;
-            node->right->val = 0;
             break;
         case NODE_PARAM:
+            assert(node->reg != NULL);
+
             node->left->reg = node->reg;
             node->right->reg = next_tmp_reg(node->reg);
-            node->right->val = node->val + 1;
-
-            /*node->left->reg = node->reg2;
-            int index = 0;
-            while (strcmp(input_registers[index], node->reg) != 0) {
-                index++;
-            }
-            
-            node->right->reg = input_registers[index + 1];
-            node->right->reg2 = next_tmp_reg(node->reg2);*/
             break;
         case NODE_RETURN:
             node->reg = next_tmp_reg(NULL);

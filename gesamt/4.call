@@ -1,0 +1,10 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+extern long func(long a);
+
+int main()
+{
+    printf("result = %li, should be = -168\n", func(-10));
+    return 0;
+}

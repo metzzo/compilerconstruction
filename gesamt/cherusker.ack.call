@@ -1,0 +1,17 @@
+extern long ack(long, long);
+long expected[] = { 1, 2, 2, 3, 3, 5, 5, 13, 13, 65533 };
+int m, n, x = 0;
+for (m = 0; m <= 3; ++m) {
+	for (n = 0; n <= 1; ++n) {
+		long r = ack(m, n);
+		long e = expected[x++];
+		(void) printf("ack(%ld, %ld) = %ld ", m, n, r);
+		if (r == e) {
+			(void) printf("(OK)\n");
+		} else {
+			(void) printf("(expected: %ld)\n", e);
+			return 0;
+		}
+	}
+}
+return 1;

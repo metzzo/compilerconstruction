@@ -1,0 +1,7 @@
+long f(long);
+RET(f(-10) == 1 && f(500) == 1);
+}
+
+long g(long a, long b, long c)
+{
+	return b == h((a+c)/2) ?  1 : 0;

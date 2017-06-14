@@ -1,0 +1,26 @@
+func(a, b)
+    return sum(1, cap(-a), addone(subone(b)), thousand(), a, 3);
+end;
+
+cap(a)
+    if a > 0 goto reta;
+    return 0;
+reta:
+    return a;
+end;
+
+sum(a, b, c, d, e, f)
+    return a + b + c + d + e + f;
+end;
+
+addone(a)
+    return a + 1;
+end;
+
+subone(a)
+    return -addone(-a);
+end;
+
+thousand()
+    return 1000;
+end;

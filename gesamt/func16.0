@@ -1,0 +1,8 @@
+(* check if compiler saves temporaries *)
+
+f(a,b)
+
+	(* id is called before neq,
+	   id overwrites locals *)
+	return id((-a)+1) + id(2*b);
+end;

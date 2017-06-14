@@ -1,0 +1,15 @@
+long f(long,long);
+long g(long a,long b,long c);
+
+// choose parameters wisely!
+// f(a,b) return g((-a)+1,3*b,a+b); end;
+
+// a = -4 .. 1
+// b = 1 .. 5
+
+RET(f(1,2) == g(0,6,3) && f(-3,5) == g(4,15,2));
+}
+
+long g(long a,long b,long c)
+{
+	return (1 << a) | (1 << b) | (1 << c);

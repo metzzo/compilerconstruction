@@ -1,0 +1,15 @@
+even(n)
+    if not (n != 0)
+        goto rettrue;
+    return odd(n + (-1));
+rettrue:
+    return 1;
+end;
+
+odd(n)
+    if not (n != 0)
+        goto retfalse;
+    return even(n + (-1));
+retfalse:
+    return 0;
+end;

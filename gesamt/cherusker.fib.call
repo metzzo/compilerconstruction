@@ -1,0 +1,16 @@
+extern long fib(long);
+long x[] = { 0, 1, 2, 4, 8, 16, 32 };
+long y[] = { 0, 1, 1, 3, 21, 987, 2178309 };
+int i;
+for (i = 0; i < 7; ++i) {
+	long r = fib(x[i]);
+	long e = y[i];
+	(void) printf("fib(%ld) = %ld ", x[i], r);
+	if (r == e) {
+		(void) printf("(OK)\n");
+	} else {
+		(void) printf("(expected: %ld)\n", e);
+		return 0;
+	}
+}
+return 1;

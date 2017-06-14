@@ -1,0 +1,2 @@
+(* parameter "backwarding" *)
+f(a,b,c,d) return g(d,c,b,a); end;

@@ -1,0 +1,13 @@
+func(a, b)
+    var two = add(a, b) + add((-1), 1);
+    var one = add(sub ((a + (-b)), a), 1) + sub((a + b + a) * 0, sub(a, b + 1));
+    return two + one;
+end;
+
+add(a, b)
+   return a + b; 
+end;
+
+sub(a, b)
+    return add(a, (-b));
+end;

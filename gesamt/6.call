@@ -1,0 +1,10 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+extern long func(long a);
+
+int main()
+{
+    func(0);
+    return 0;
+}

@@ -41,6 +41,7 @@ typedef struct tree_node_t {
 } tree_node;
 
 void calc_register(tree_node *node);
+void root_term(tree_node *node);
 
 // iburg stuff
 typedef tree_node *treenodeptr;
@@ -52,7 +53,7 @@ typedef tree_node *treenodeptr;
 #define STATE_LABEL(p)  	((p)->label)
 #define PANIC				printf
 
-// functions
+char *next_tmp_reg(char *current);
 
 tree_node *new_num(int64_t val);
 tree_node *new_var(table *var_table, char *name);
@@ -74,5 +75,6 @@ tree_node *new_notequ(tree_node *left, tree_node *right, char *label);
 tree_node *new_func(char *name, int param_num, tree_node *param);
 tree_node *new_param(tree_node *expr, tree_node *right);
 tree_node *new_save_stack(int param_num);
+
 
 #endif

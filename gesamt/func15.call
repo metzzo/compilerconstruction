@@ -1,0 +1,24 @@
+long f(long,long);
+long g(long,long);
+
+RET(f(0,0) == g(0,0) && f(2,5) == g(2,5) && f(-6, -1) == g(-6, -1) && f(-10,7) == g(-10,7));
+}
+
+long id(long n)
+{
+	asm volatile(
+	"xor %rax,%rax\n"
+	"xor %rcx,%rcx\n"
+	"xor %rdx,%rdx\n"
+	"xor %rsi,%rsi\n"
+	"xor %r8,%r8\n"
+	"xor %r9,%r9\n"
+	"xor %r10,%r10\n"
+	"xor %r11,%r11\n"
+	);
+	return n;
+}
+
+long g(long a, long b)
+{
+	return 4*a+3*b+1;

@@ -1,0 +1,13 @@
+long f();
+long g();
+
+RET(f() == g() && f() == g() && f() == g() && f() == g() && f() == g() && f() == g());
+}
+#include <assert.h>
+
+long g()
+{
+	static long X[] = {-34834, -34834, 3483, 3483, 177, 177, 96, 96, 34, 34, 0x1234567812345678, 0x1234567812345678};
+	static int i = 0;
+	assert(X[i] == X[i - (i%2)]);
+	return X[i++];

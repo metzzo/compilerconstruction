@@ -1,0 +1,32 @@
+func(a)
+    var two = f2();
+    return sum(two, f1() + a + two + f2(), 5, f3() + (-f4()), f5() + a, a + f6()) * 21;
+end;
+
+sum(a, b, c, d, e, f)
+    return a + b + c + d + e + f;
+end;
+
+f1()
+    return 1;
+end;
+
+f2()
+    return 2;
+end;
+
+f3()
+    return 3;
+end;
+
+f4()
+    return 4;
+end;
+
+f5()
+    return 5;
+end;
+
+f6()
+    return 6;
+end;

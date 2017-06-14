@@ -1,0 +1,10 @@
+fib(n)
+    if n != 0 goto neq0;
+    return 0;
+neq0:
+    if n != 1 goto neq1;
+    return 1;
+neq1:
+    return fib(n + (-1)) + fib(n + (-2));
+    n = n + 1;
+end;

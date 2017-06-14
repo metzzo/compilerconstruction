@@ -1,0 +1,20 @@
+(* register usage stress test *)
+func(n)
+    (n + n);
+    (n + n);
+    (n + n);
+    (n + n);
+    1;
+    n;
+    f();
+    f();
+    f();
+    f();
+    f();
+    f();
+    f();
+    f();
+end;
+
+f()
+end;

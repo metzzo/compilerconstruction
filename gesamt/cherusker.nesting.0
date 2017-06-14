@@ -1,0 +1,8 @@
+cherusker(x, y)
+	var a = x + (y + nest(x, x + y, y));
+	return a + nest(x, y, x);
+end;
+
+nest(x, y, z)
+	return x * y * z;
+end;

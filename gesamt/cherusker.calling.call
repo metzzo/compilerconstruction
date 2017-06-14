@@ -1,0 +1,15 @@
+extern long foo(long, long, long, long);
+int a = 50, b = 60, c = 70, d = 80;
+int i;
+for (i = 0; i < 1; ++i) {
+	long r = foo(a, b, c, d);
+	long e = (c + 9 * d * d) + (a + 9 * b);
+	(void) printf("foo(%ld, %ld, %ld, %ld) = %ld ", a, b, c, d, r);
+	if (r == e) {
+		(void) printf("(OK)\n");
+	} else {
+		(void) printf("(expected: %ld)\n", e);
+		return 0;
+	}
+}
+return 1;

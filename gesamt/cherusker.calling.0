@@ -1,0 +1,12 @@
+foo(a, b, c, d)
+	var e = bar(c, meep(d));
+	return e + bar(a, b);
+end;
+
+bar(a, b)
+	return a + (9 * b);
+end;
+
+meep(a)
+	return a * a;
+end;

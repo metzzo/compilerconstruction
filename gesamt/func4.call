@@ -1,0 +1,9 @@
+long f(long,long,long,long);
+long g(long a,long b,long c,long d);
+
+RET(f(1,2,3,4) == g(4,3,2,1) && f(0,5,15,4) == g(4,15,5,0));
+}
+
+long g(long a,long b,long c,long d)
+{
+	return (1 << a) | (1 << b) | (1 << c) | (1 << d);

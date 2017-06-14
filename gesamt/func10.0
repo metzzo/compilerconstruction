@@ -1,0 +1,2 @@
+(* check for premature optimization *)
+f() return g()+g()+g()+g(); end;

@@ -1,0 +1,11 @@
+extern long cherusker(long, long);
+int a = 66, b = 99;
+long r = cherusker(a, b);
+long e = a + b + a * (a + b) * b + a * b * a;
+(void) printf("cherusker(%ld, %ld) = %ld ", a, b, r);
+if (r != e) {
+	(void) printf("(expected: %ld)\n", e);
+	return 0;
+}
+(void) printf("(OK)\n");
+return 1;

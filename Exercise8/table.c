@@ -91,13 +91,6 @@ char *get_register(table *source, char *name) {
     for (int i = 0; i < source->name_count; i++) {
         if (compare_table_name(source->names[i], name) == 0) {
             if (is_local_var(source->names[i])) {
-                /*int local_count = 0;
-                for (int j = 0; j < source->name_count; j++) {
-                    if (is_local_var(source->names[j])) {
-                        local_count++;
-                    }
-                }*/
-
                 char *reg = malloc(100*sizeof(char));
                 sprintf(reg, "%d(%%rbp)", -8*local_pos);
                 return reg;

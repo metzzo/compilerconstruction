@@ -1,0 +1,23 @@
+long f(long);
+
+RET(f(0) == 1 && f(1) == 1 && f(2) == 1 && f(500) == 1);
+}
+
+long id(long n)
+{
+	asm volatile(
+	"xor %rax,%rax\n"
+	"xor %rcx,%rcx\n"
+	"xor %rdx,%rdx\n"
+	"xor %rsi,%rsi\n"
+	"xor %r8,%r8\n"
+	"xor %r9,%r9\n"
+	"xor %r10,%r10\n"
+	"xor %r11,%r11\n"
+	);
+	return n;
+}
+
+long neq(long a, long b, long c)
+{
+	return a-c == b;

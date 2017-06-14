@@ -1,0 +1,7 @@
+func(n)
+    return count1(n+1);
+end;
+
+count1(n)
+    return n + 1;
+end;

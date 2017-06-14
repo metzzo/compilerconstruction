@@ -1,0 +1,18 @@
+long f();
+long g();
+int check(long);
+
+RET(f() && check(2));
+}
+
+static long calls = 0;
+
+int check(long exp)
+{
+	return calls == exp;
+}
+
+long g()
+{
+	calls++;
+	return 1;

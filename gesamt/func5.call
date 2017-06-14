@@ -1,0 +1,12 @@
+long f(long*);
+long g(long a,long b,long c,long d);
+
+long A[] = {1,2,3,4};
+long B[] = {0,5,15,4};
+
+RET(f(A) == g(A[0],A[1],A[2],A[3]) && f(B) == g(B[0],B[1],B[2],B[3]));
+}
+
+long g(long a,long b,long c,long d)
+{
+	return (1 << a) | (1 << b) | (1 << c) | (1 << d);

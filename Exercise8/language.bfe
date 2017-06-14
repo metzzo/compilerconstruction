@@ -51,11 +51,12 @@ cexpr:  T_ADD(cexpr, cexpr)     # 0 # asm_add_const(bnode);
 expr:   T_MUL(expr, expr)       # 1 # asm_mul(bnode, bnode->left->reg, bnode->right->reg);
 expr:   T_MUL(expr, cexpr)      # 1 # asm_mul(bnode, to_literal(bnode->right->val), bnode->left->reg);
 expr:   T_MUL(cexpr, expr)      # 1 # asm_mul(bnode, to_literal(bnode->left->val), bnode->right->reg);
-expr:   T_FUNC_CALL(save, param)# 1 # asm_func_call(bnode);
+expr:   T_FUNC_CALL(save, param)      # 1 # asm_func_call(bnode);
 
 save:   T_SAVE_STACK            # 1 # asm_save_stack(bnode);
-param:  T_PARAM(expr, param)    # 1 # asm_param(bnode);
-param:  T_PARAM(expr, empty)    # 1 # asm_param(bnode);
+param:  T_PARAM(expr, param)   # 1 # asm_param(bnode);
+param:  T_PARAM(expr, empty)   # 1 # asm_param(bnode);
+param:  empty                   # 0
 
 cexpr:  T_MUL(cexpr, cexpr)     # 0 # asm_mul_const(bnode);
 

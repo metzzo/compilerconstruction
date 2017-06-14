@@ -204,6 +204,8 @@ Stat: KW_RETURN Expr
             @i @Stat.node@ = @Term.node@;
             @i @Stat.num_variables@ = 0;
 
+            @reggen root_term(@Stat.node@);
+
             @codegen burm_label(@Stat.node@); burm_reduce(@Stat.node@,1);
         @}
     ;
